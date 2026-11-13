@@ -92,6 +92,20 @@ h1{font-family:Pix,Verdana,sans-serif;font-weight:400;font-size:44px;color:#fff;
 @media (max-width:520px){.modes{grid-template-columns:1fr}.opts .btn .zh{font-size:40px}.parch{border-width:24px 22px;border-image-width:24px 22px}.slot{width:76px;min-height:92px;padding:3px}.slot .zh{font-size:38px}.slot .l{font-size:11px}.op{font-size:24px}.recipe{gap:5px}.sign{font-size:12px}.task{font-size:17px}.opts .btn{min-height:76px;font-size:17px}.opts.three .btn .zh{font-size:32px}.hrt{width:22px;height:20px}.title .lamp{display:none}h1{font-size:24px}.stat{font-size:13px}}
 
 /* кухня слов */
+.chips{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;font-family:Pix,Verdana,sans-serif;font-size:15px;color:#fff;text-shadow:2px 2px 0 #000}
+.gh{font-family:Pix,Verdana,sans-serif;font-size:15px;color:var(--gold);text-shadow:2px 2px 0 #000;margin-top:16px}
+.gh+.modes{margin-top:8px}
+.sline{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0 4px}
+.sl2{min-width:56px;height:64px;padding:0 8px;background:#5a6bb0;border:3px solid #17110c;box-shadow:inset 3px 3px 0 #3d4c8a,inset -3px -3px 0 #b9c4f5;font:inherit;color:#fff;font-size:32px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.sl2.f{background:#8b8b8b;box-shadow:inset 3px 3px 0 #4a4a4a,inset -3px -3px 0 #d6d6d6;text-shadow:2px 2px 0 #333}
+.sl2.res{background:#3d6b2c;text-shadow:2px 2px 0 #1a3a12}.sl2.bad{background:#a83232;text-shadow:2px 2px 0 #4a1414}
+.stiles .btn{min-height:68px}.stiles .btn .zh{font-size:30px}
+.blank{display:inline-block;min-width:92px;border-bottom:5px solid #5a6bb0;color:#5a6bb0;text-align:center}
+.bh{font-family:Pix,Verdana,sans-serif;font-size:18px;margin-bottom:8px}
+.sb>div{display:grid;grid-template-columns:1fr auto;gap:10px;padding:8px 0;border-bottom:2px solid #c9b48a;align-items:center;font-size:17px;font-weight:400}
+.sb small{font-size:14px}
+@media (max-width:520px){.sl2{min-width:44px;height:54px;font-size:26px}.stiles .btn .zh{font-size:24px}.blank{min-width:60px}}
+
 .opts .btn .py{font-size:36px;line-height:1.15;letter-spacing:1px;display:block}.opts.three .btn .py{font-size:30px}
 .py{font-family:"Segoe UI","Helvetica Neue",Arial,"Noto Sans","DejaVu Sans",sans-serif;font-weight:700}
 [hidden]{display:none!important}
@@ -108,7 +122,7 @@ button.slot{font:inherit;color:inherit;cursor:pointer}.slot.bad{background:#a832
 <script>
 // ===== данные: «Новые слова» 3 урока «Какие блюда тебе нравятся?» (стр. 31, «Время учить китайский! 9») =====
 // слово: [иероглифы, слоги пиньиня, перевод, часть речи, пояснение]
-const W=[
+const W3=[
  ['点菜',['diǎn','cài'],'заказывать (блюда)','гл.','в учебнике записано 点(菜): слово 菜 можно опустить'],
  ['过',['guò'],'суффикс опыта','служ. сл.','ставится после глагола, значит «неопределённое прошедшее»: 吃过 — доводилось есть'],
  ['饮食',['yǐn','shí'],'питание, диета','сущ.'],
@@ -129,15 +143,22 @@ const W=[
  ['川菜',['chuān','cài'],'сычуаньская кухня','имя собств.'],
  ['法国',['Fǎ','guó'],'Франция','имя собств.'],
  ['意大利',['Yì','dà','lì'],'Италия','имя собств.']];
+const WALL=[...[["这边", ["zhè", "biān"], "эта сторона, здесь, сюда", "словосоч.", "", 1], ["挂", ["guà"], "висеть, вешать", "гл.", "", 1], ["灯笼", ["dēng", "long"], "фонарь (из бумаги или ткани)", "сущ.", "", 1], ["家", ["jiā"], "семья, дом", "сущ., сч. сл.", "счётное слово для магазинов, фирм, ресторанов: 一家饭馆", 1], ["开张", ["kāi", "zhāng"], "открыть своё дело, начать бизнес", "словосоч.", "", 1], ["那边", ["nà", "biān"], "та сторона, там", "словосоч.", "", 1], ["鞭炮", ["biān", "pào"], "хлопушка, петарда", "сущ.", "", 1], ["响", ["xiǎng"], "шуметь, хлопать", "гл.", "", 1], ["放", ["fàng"], "взрывать, пускать (петарды, фейерверк)", "гл.", "в учебнике записано 放(鞭炮): 放鞭炮", 1], ["喜事", ["xǐ", "shì"], "радостное событие", "сущ.", "", 1], ["表示", ["biǎo", "shì"], "показывать, выражать", "гл.", "", 1], ["庆祝", ["qìng", "zhù"], "праздновать; празднование", "гл., сущ.", "", 1], ["新郎", ["xīn", "láng"], "жених", "сущ.", "", 1], ["恭喜", ["gōng", "xǐ"], "поздравлять", "гл.", "", 1], ["另外", ["lìng", "wài"], "кроме того, вдобавок; другой", "нареч., мест.", "", 1], ["夸", ["kuā"], "хвалить, делать комплимент", "гл.", "", 1], ["新娘", ["xīn", "niáng"], "невеста", "сущ.", "", 1], ["身上", ["shēn", "shang"], "на теле, при себе", "словосоч.", "", 1], ["脚", ["jiǎo"], "ступня", "сущ.", "", 1], ["朵", ["duǒ"], "гроздь, кисть; счётное слово для цветов, облаков", "сущ., сч. сл.", "", 1], ["花儿", ["huār"], "цветок", "сущ.", "", 1], ["墙", ["qiáng"], "стена", "сущ.", "", 1], ["摆", ["bǎi"], "поставить, расположить, накрывать (на стол)", "гл.", "", 1], ["蜡烛", ["là", "zhú"], "свеча", "сущ.", "", 1], ["阿姨", ["ā", "yí"], "тётя (по матери)", "сущ.", "", 1], ["那天", ["nà", "tiān"], "в тот день", "словосоч.", "", 1], ["西方", ["xī", "fāng"], "запад", "сущ.", "", 1]],...[["祝贺", ["zhù", "hè"], "поздравлять", "гл.", "", 2], ["寄", ["jì"], "отправлять (по почте)", "гл.", "", 2], ["开玩笑", ["kāi", "wán", "xiào"], "шутить, разыгрывать", "словосоч.", "", 2], ["讲", ["jiǎng"], "рассказывать (историю)", "гл.", "в учебнике записано 讲(故事): 讲故事", 2], ["性格", ["xìng", "gé"], "характер", "сущ.", "", 2], ["开朗", ["kāi", "lǎng"], "жизнерадостный, весёлый", "прил.", "", 2], ["重要", ["zhòng", "yào"], "важный", "прил.", "", 2], ["传统", ["chuán", "tǒng"], "традиция; традиционный", "сущ., прил.", "", 2], ["每年", ["měi", "nián"], "каждый год", "словосоч.", "", 2], ["人们", ["rén", "men"], "люди", "сущ.", "", 2], ["准备", ["zhǔn", "bèi"], "готовить, делать приготовления", "гл.", "", 2], ["过节", ["guò", "jié"], "отмечать праздник", "словосоч.", "", 2], ["贴", ["tiē"], "наклеивать, лепить", "гл.", "", 2], ["春联", ["chūn", "lián"], "парные надписи по случаю Праздника весны", "сущ.", "", 2], ["美好", ["měi", "hǎo"], "красивый, хороший", "прил.", "", 2], ["祝愿", ["zhù", "yuàn"], "желать; пожелание", "гл., сущ.", "", 2], ["纸条", ["zhǐ", "tiáo"], "свиток, бумажная лента", "сущ.", "", 2], ["倒", ["dào"], "переворачивать (вниз головой)", "гл.", "", 2], ["福", ["fú"], "счастье, благополучие, удача", "сущ.", "", 2], ["意思", ["yì", "si"], "значение, смысл", "сущ.", "", 2]],...W3.map(w=>[w[0],w[1],w[2],w[3],w[4]||'',3])];
+const SENT=[[1, ["这边", "挂", "着", "红色", "的", "灯笼"], "这边挂着红色的灯笼。", "Здесь висят красные фонарики.", "zhèbiān guà zhe hóngsè de dēnglóng"], [1, ["这", "是", "一", "家", "饭馆", "今天", "开张"], "这是一家饭馆，今天开张。", "Это ресторан, сегодня он открывается.", "zhè shì yī jiā fànguǎn jīntiān kāizhāng"], [1, ["那边", "的", "门口", "也", "站", "着", "很多", "人"], "那边的门口也站着很多人。", "У дверей там тоже стоит много людей.", "nàbiān de ménkǒu yě zhàn zhe hěnduō rén"], [1, ["鞭炮", "响", "了", "婚礼", "已经", "开始", "了"], "鞭炮响了，婚礼已经开始了。", "Захлопали петарды, свадьба уже началась.", "biānpào xiǎng le hūnlǐ yǐjīng kāishǐ le"], [1, ["挂", "灯笼", "放", "鞭炮", "都", "是", "为了", "表示", "庆祝"], "挂灯笼、放鞭炮都是为了表示庆祝。", "Вешать фонарики и запускать петарды — всё это, чтобы отметить праздник.", "guà dēnglóng fàng biānpào dōu shì wèile biǎoshì qìngzhù"], [1, ["过", "春节", "的", "时候", "这里", "就", "更", "热闹", "了"], "过春节的时候，这里就更热闹了。", "Когда празднуют Праздник весны, здесь ещё оживлённее.", "guò chūnjié de shíhòu zhèlǐ jiù gèng rènào le"], [1, ["我", "应该", "对", "新郎", "说", "什么"], "我应该对新郎说什么？", "Что мне сказать жениху?", "wǒ yīnggāi duì xīnláng shuō shénme"], [1, ["有", "喜事", "的", "时候"], "有喜事的时候。", "Когда случается радостное событие.", "yǒu xǐshì de shíhòu"], [1, ["另外", "你", "也", "可以", "夸夸", "他", "的", "新娘"], "另外，你也可以夸夸他的新娘。", "Кроме того, ты можешь похвалить его невесту.", "lìngwài nǐ yě kěyǐ kuākuā tā de xīnniáng"], [1, ["昨天", "我", "参加", "了", "美云", "叔叔", "的", "婚礼"], "昨天我参加了美云叔叔的婚礼。", "Вчера я был на свадьбе дяди Мэйюнь.", "zuótiān wǒ cānjiā le měiyún shūshū de hūnlǐ"], [1, ["新娘", "长", "得", "很", "漂亮"], "新娘长得很漂亮。", "Невеста очень красивая.", "xīnniáng zhǎng de hěn piàoliàng"], [1, ["她", "身上", "穿", "着", "红色", "的", "旗袍"], "她身上穿着红色的旗袍。", "На ней красное ципао.", "tā shēnshang chuān zhe hóngsè de qípáo"], [1, ["脚", "上", "是", "一", "双", "红色", "的", "皮鞋"], "脚上是一双红色的皮鞋。", "На ногах у неё красные кожаные туфли.", "jiǎo shàng shì yī shuāng hóngsè de píxié"], [1, ["头", "上", "还", "戴", "着", "一", "朵", "红色", "的", "花儿"], "头上还戴着一朵红色的花儿。", "В волосах у неё ещё красный цветок.", "tóu shàng hái dài zhe yī duǒ hóngsè de huāér"], [1, ["桌子", "上", "摆", "着", "红色", "的", "蜡烛"], "桌子上摆着红色的蜡烛。", "На столе стоят красные свечи.", "zhuōzi shàng bǎi zhe hóngsè de làzhú"], [1, ["那天", "我", "阿姨", "穿", "着", "白色", "的", "裙子"], "那天我阿姨穿着白色的裙子。", "В тот день моя тётя была в белом платье.", "nàtiān wǒ āyí chuān zhe báisè de qúnzi"], [1, ["西方", "人", "的", "婚礼", "是", "白色", "的"], "西方人的婚礼是白色的。", "Свадьба у жителей Запада — белая.", "xīfāng rén de hūnlǐ shì báisè de"], [2, ["你", "写", "汉字", "写", "得", "很", "好"], "你写汉字写得很好。", "Ты очень хорошо пишешь иероглифы.", "nǐ xiě hànzì xiě de hěn hǎo"], [2, ["你", "能", "不", "能", "帮", "我", "写", "一", "张", "贺卡"], "你能不能帮我写一张贺卡？", "Не мог бы ты помочь мне написать открытку?", "nǐ néng bù néng bāng wǒ xiě yī zhāng hèkǎ"], [2, ["我", "下", "个", "星期", "寄", "给", "在", "中国", "的", "网友"], "我下个星期寄给在中国的网友。", "На следующей неделе я отправлю её онлайн-другу в Китае.", "wǒ xià gè xīngqī jì gěi zài zhōngguó de wǎngyǒu"], [2, ["别", "开玩笑", "了"], "别开玩笑了。", "Не шути.", "bié kāiwánxiào le"], [2, ["他", "讲", "故事", "讲", "得", "很", "好"], "他讲故事讲得很好。", "Он очень хорошо рассказывает истории.", "tā jiǎng gùshì jiǎng de hěn hǎo"], [2, ["他", "的", "性格", "可能", "很", "开朗"], "他的性格可能很开朗。", "Характер у него, наверное, очень жизнерадостный.", "tā de xìnggé kěnéng hěn kāilǎng"], [2, ["我", "马上", "就", "帮", "你", "写", "贺卡"], "我马上就帮你写贺卡。", "Я сейчас же помогу тебе написать открытку.", "wǒ mǎshàng jiù bāng nǐ xiě hèkǎ"], [2, ["春节", "是", "中国", "最", "重要", "的", "传统", "节日"], "春节是中国最重要的传统节日。", "Праздник весны — самый важный традиционный праздник Китая.", "chūnjié shì zhōngguó zuì zhòngyào de chuántǒng jiérì"], [2, ["人们", "就", "开始", "忙", "着", "准备", "过节", "了"], "人们就开始忙着准备过节了。", "Люди начинают хлопотать, готовясь к празднику.", "rénmen jiù kāishǐ máng zhe zhǔnbèi guòjié le"], [2, ["妈妈", "要", "准备", "很多", "好吃", "的", "东西"], "妈妈要准备很多好吃的东西。", "Мама готовит много вкусного.", "māmā yào zhǔnbèi hěnduō hǎochī de dōngxī"], [2, ["人们", "把", "美好", "的", "祝愿", "写", "在", "红色", "的", "纸条", "上"], "人们把美好的祝愿写在红色的纸条上。", "Люди пишут добрые пожелания на красных бумажных лентах.", "rénmen bǎ měihǎo de zhùyuàn xiě zài hóngsè de zhǐtiáo shàng"], [2, ["把", "纸条", "贴", "在", "门", "的", "两边"], "把纸条贴在门的两边。", "Бумажные ленты наклеивают по обе стороны двери.", "bǎ zhǐtiáo tiē zài mén de liǎngbiān"], [2, ["有人", "还", "在", "门上", "倒", "着", "贴", "一个", "福", "字"], "有人还在门上倒着贴一个“福”字。", "Некоторые ещё наклеивают на дверь иероглиф «福» вверх ногами.", "yǒurén hái zài ménshàng dào zhe tiē yígè fú zì"], [3, ["我", "叔叔", "请客", "他", "点", "了", "六", "七", "个", "菜"], "我叔叔请客，他点了六七个菜。", "Мой дядя угощал, он заказал шесть-семь блюд.", "wǒ shūshū qǐngkè tā diǎn le liù qī gè cài"], [3, ["我们", "先", "点", "了", "一两个", "凉菜"], "我们先点了一两个凉菜。", "Сначала мы заказали одно-два холодных блюда.", "wǒmen xiān diǎn le yīliǎnggè liángcài"], [3, ["你", "吃", "过", "日餐", "吗"], "你吃过日餐吗？", "Ты пробовал японскую кухню?", "nǐ chī guò rìcān ma"], [3, ["我", "吃", "过", "日餐", "和", "中餐", "不", "太", "一样"], "我吃过，日餐和中餐不太一样。", "Пробовал; японская кухня и китайская не очень похожи.", "wǒ chī guò rìcān hé zhōngcān bù tài yīyàng"], [3, ["我", "喜欢", "吃", "墨西哥", "菜", "因为", "我", "喜欢", "吃", "辣", "的"], "我喜欢吃墨西哥菜，因为我喜欢吃辣的。", "Я люблю мексиканскую кухню, потому что люблю острое.", "wǒ xǐhuān chī mòxīgē cài yīnwèi wǒ xǐhuān chī là de"], [3, ["你", "也", "一定", "喜欢", "吃", "中国", "的", "川菜"], "你也一定喜欢吃中国的川菜。", "Тебе наверняка понравится и китайская сычуаньская кухня.", "nǐ yě yídìng xǐhuān chī zhōngguó de chuāncài"], [3, ["你", "吃", "过", "法国", "菜", "吗"], "你吃过法国菜吗？", "Ты пробовал французскую кухню?", "nǐ chī guò fǎguó cài ma"], [3, ["法国", "菜", "我", "更", "喜欢"], "法国菜我更喜欢。", "Французская кухня мне нравится больше.", "fǎguó cài wǒ gèng xǐhuān"], [3, ["不同", "的", "民族", "有", "不同", "的", "文化"], "不同的民族有不同的文化。", "У разных народов разная культура.", "bùtóng de mínzú yǒu bùtóng de wénhuà"], [3, ["在", "中国", "人们", "习惯", "用", "筷子", "吃饭"], "在中国，人们习惯用筷子吃饭。", "В Китае люди привыкли есть палочками.", "zài zhōngguó rénmen xíguàn yòng kuàizi chīfàn"], [3, ["一家人", "坐", "在", "一起", "桌子", "中间", "摆", "着", "菜"], "一家人坐在一起，桌子中间摆着菜。", "Вся семья сидит вместе, посередине стола стоят блюда.", "yījiārén zuò zài yìqǐ zhuōzi zhōngjiān bǎi zhe cài"], [3, ["每个人", "用", "筷子", "夹", "菜", "吃"], "每个人用筷子夹菜吃。", "Каждый берёт еду палочками.", "měigèrén yòng kuàizi jiā cài chī"], [3, ["在", "欧洲", "人们", "习惯", "用", "刀叉", "吃饭"], "在欧洲，人们习惯用刀叉吃饭。", "В Европе привыкли есть ножом и вилкой.", "zài ōuzhōu rénmen xíguàn yòng dāochā chīfàn"], [3, ["有人", "说", "这样", "吃饭", "很", "卫生"], "有人说，这样吃饭很卫生。", "Некоторые говорят, что так есть очень гигиенично.", "yǒurén shuō zhèyàng chīfàn hěn wèishēng"], [3, ["他们", "用", "手", "抓", "饭", "吃"], "他们用手抓饭吃。", "Они едят рукой.", "tāmen yòng shǒu zhuā fàn chī"], [3, ["世界", "上", "还", "有", "一些", "民族"], "世界上还有一些民族。", "В мире есть и другие народы.", "shìjiè shàng hái yǒu yīxiē mínzú"], [3, ["你", "用", "过", "筷子", "吗"], "你用过筷子吗？", "Ты пользовался палочками?", "nǐ yòng guò kuàizi ma"]];
 // ключи знакомых иероглифов — связь с «Шахтой ключей»
 const kk={'筷':'⺮ бамбук','使':'亻 человек','饮':'饣 еда','饭':'饣 еда','食':'饣 еда','餐':'食 еда','坐':'土 земля','抓':'扌 рука','刀':'刀 нож','叉':'又 правая рука','过':'辶 дорога','间':'门 дверь','界':'田 поле','点':'灬 огонь','菜':'艹 трава','吃':'口 рот','夹':'大 большой'};
+Object.assign(kk,{'挂':'扌 рука','放':'攵 рука с палкой','响':'口 рот','新':'斤 топор','娘':'女 женщина','郎':'阝 холм','夸':'大 большой','庆':'广 навес','祝':'礻 алтарь','贺':'贝 ракушка','蜡':'虫 насекомое','花':'艹 трава','阿':'阝 холм','寄':'宀 крыша','讲':'讠 речь','性':'忄 сердце','意':'心 сердце','思':'心 сердце','格':'木 дерево','传':'亻 человек','倒':'亻 человек','统':'纟 нить','纸':'纟 нить','准':'冫 лёд','福':'礻 алтарь','贴':'贝 ракушка','姨':'女 женщина','摆':'扌 рука','朗':'月 луна','美':'羊 баран','春':'日 солнце','联':'耳 ухо','重':'里 ли','每':'母 мама','喜':'口 рот','节':'艹 трава'});
 // похожие иероглифы — «ловушки» для ответов
 const LOOK={'叉':'又','刀':'刃','坐':'座','使':'便','间':'问','抓':'爪','筷':'快','饭':'反','饮':'饥','界':'果','菜':'采','吃':'乞','点':'店','夹':'来','食':'良','餐':'湌','具':'真','国':'囯','过':'达','用':'周'};
 
+Object.assign(LOOK,{'挂':'桂','放':'故','响':'向','蜡':'腊','寄':'奇','福':'副','倒':'到','贴':'帖','准':'淮','思':'恩','传':'转','统':'充','庆':'床','娘':'浪','郎':'朗','新':'亲','夸':'垮','朵':'杂','摆':'罢','阿':'河','脚':'胸','墙':'啬','爆':'暴','灯':'打','笼':'龙','纸':'低','意':'音','性':'姓','格':'路'});
 const $=s=>document.querySelector(s), app=$('#app');
 const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const pick=(a,n)=>sh(a).slice(0,n);
 const store={get:(k,d)=>{try{return +localStorage.getItem(k)||d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+let scope=store.get('misha_scope',7),W;
+const applyScope=()=>{W=WALL.filter(w=>scope&(1<<(w[5]-1)));if(W.length<4)W=WALL};applyScope();
+const SA=()=>{const a=SENT.filter(s=>scope&(1<<(s[0]-1)));return a.length>=3?a:SENT};
 let xp=store.get('misha_xp',0);const addXp=n=>{xp+=n;store.set('misha_xp',xp)};
 let actx;function beep(ok){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.value=ok?660:160;g.gain.value=.05;o.connect(g);g.connect(actx.destination);o.start();if(ok)o.frequency.setValueAtTime(880,actx.currentTime+.08);o.stop(actx.currentTime+(ok?.18:.25))}catch(e){}}
 const zh=t=>`<span class="zh">${t}</span>`, ic=(n,c='')=>`<span class="ic ${c}" style="background-image:var(--${n})"></span>`;
@@ -182,18 +203,24 @@ const lookWord=w=>{const a=[...w[0]],i=a.findIndex(c=>LOOK[c]);if(i<0)return nul
 const MODES=[['listen','lantern','Диктант на слух','Слушай слово и выбери иероглифы','g','pond'],['build','table','Собери слово','Сложи слово из иероглифов-плиток','w','cherry'],
  ['write','chest','Пиши по памяти','Рисуй иероглифы и сверяйся с ответом','d','woodbg'],['tone','emer','Тоны пиньиня','Выбери пиньинь с верными тонами','','pond'],
  ['mean','coin','Что значит','Иероглифы ⇄ перевод','g','cherry'],['mem','star','Мемори на двоих','Пары «иероглиф — перевод»','w','fire'],
- ['boss','creeper','Крипер-босс','10 секунд на вопрос, 10 сердечек','','creep'],['book','book','Книга слов','Шпаргалка: все слова 3 урока','w','woodbg']];
+ ['boss','creeper','Крипер-босс','10 секунд на вопрос, 10 сердечек','','creep'],['book','book','Книга слов и предложений','Шпаргалка: слова и фразы из учебника','w','woodbg']];
+const SMODES=[['sbuild','lantern','Собери предложение','Слушай и складывай фразу из плиток','g','pond'],['cloze','coin','Пропущенное слово','Какого слова не хватает в предложении?','w','cherry'],
+ ['swrite','chest','Пиши в тетради','Запиши фразу на бумаге и сверься','d','woodbg']];
 const M=Object.fromEntries(MODES.map(m=>[m[0],m]));
 
 function menu(){stop();bg('fire');app.style.justifyContent='';
- const weak=W.filter(w=>err(w[0])>0).length;
- app.innerHTML=`<div class="menuwrap"><div><div class="title"><i class="lamp"></i><div><h1>КУХНЯ СЛОВ</h1><div class="sub"><span class="zh">生词</span> · «Время учить китайский! 9» · урок 3 «Какие блюда тебе нравятся?» · ${W.length} слов</div></div></div>
- <div class="modes">${MODES.map(m=>`<button class="btn card ${m[4]} ${m[0]==='book'?'w2':''}" data-m="${m[0]}">${ic(m[1])}<span><b>${m[2]}</b><small>${m[3]}</small></span></button>`).join('')}</div></div>
+ const weak=W.filter(w=>err(w[0])>0).length+SA().filter(s=>serr(s)>0).length;
+ const card=m=>`<button class="btn card ${m[4]} ${m[0]==='book'?'w2':''}" data-m="${m[0]}">${ic(m[1])}<span><b>${m[2]}</b><small>${m[3]}</small></span></button>`;
+ app.innerHTML=`<div class="menuwrap"><div><div class="title"><i class="lamp"></i><div><h1>КУХНЯ СЛОВ</h1><div class="sub"><span class="zh">生词</span> · «Время учить китайский! 9» · ${W.length} слов · ${SA().length} предложений</div></div></div>
+ <div class="chips">Повторяем: ${[1,2,3].map(n=>`<button class="btn sm ${scope&(1<<(n-1))?'g':''}" data-l="${n}">Урок ${n}</button>`).join('')}</div>
+ <div class="gh">Диктант: предложения</div><div class="modes">${SMODES.map(card).join('')}</div>
+ <div class="gh">Слова</div><div class="modes">${MODES.map(card).join('')}</div></div>
  <div class="parch player"><div class="head"></div><div class="nm">Миша</div>
  <div class="ln">${ic('emer','s')} Опыт: ${xp} XP</div><div class="ln">${ic('creeper','s')} Рекорд босса: ${store.get('misha_boss_w',0)}</div><div class="ln">${ic('star','s')} Уровень: ${1+(xp/200|0)}</div>
- <div class="ln">${ic('heart','s')} Трудных слов: ${weak}</div>
+ <div class="ln">${ic('heart','s')} Трудных: ${weak}</div>
  <a class="btn sm w" href="index.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;width:100%">⛏ Шахта ключей</a></div></div>`;
- app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const m=b.dataset.m;({mem,boss,book,build,write}[m]||(()=>quiz(m)))()});}
+ app.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{const ns=scope^(1<<(+b.dataset.l-1));if(!ns)return;scope=ns;store.set('misha_scope',ns);applyScope();menu()});
+ app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const m=b.dataset.m;({mem,boss,book,build,write,sbuild,cloze,swrite}[m]||(()=>quiz(m)))()});}
 
 // ===== генераторы вопросов с вариантами =====
 function qMean(){const w=wpick(),rev=Math.random()<.5,opts=sh([w,...pick(W.filter(x=>x!==w),3)]);
@@ -280,6 +307,81 @@ function write(){stop();bg('woodbg');app.style.justifyContent='';let n=0,score=0
   $('#yes').onclick=()=>{score++;rate(w,true);addXp(12);beep(1);next()};$('#no').onclick=()=>{rate(w,false);wrong.push(w);beep(0);next()};}
  next();}
 
+
+// ===== предложения =====
+const sKey=s=>'misha_s_'+s[1].join(''),serr=s=>store.get(sKey(s),0),srate=(s,ok)=>store.set(sKey(s),ok?Math.max(0,serr(s)-1):Math.min(5,serr(s)+1));
+let sRecent=[];
+function spick(){const c0=SA(),c=c0.filter(s=>!sRecent.includes(sKey(s))),a=c.length>=3?c:c0,t=a.map(s=>1+2*serr(s));
+ let r=Math.random()*t.reduce((x,y)=>x+y,0),s=a[a.length-1];for(let i=0;i<a.length;i++){r-=t[i];if(r<=0){s=a[i];break}}
+ sRecent.push(sKey(s));if(sRecent.length>5)sRecent.shift();return s}
+const sFb=s=>`<div class="zh" style="font-size:30px;color:#fff;line-height:1.3">${s[2]}</div><div style="margin-top:4px">${P(s[4])}</div><div style="margin-top:4px">${s[3]}</div>`;
+const wInfo=t=>{const w=WALL.find(x=>x[0]===t);return w?`${zh(w[0])} ${P(py(w))} — ${w[2]}`:''};
+const hintBtn=`<button class="btn sm" id="hint" style="margin-top:6px">💡 Пиньинь</button>`;
+const bindHint=s=>{const b=$('#hint');if(b)b.onclick=()=>{b.outerHTML=`<div id="hv" style="margin-top:8px;font-size:20px">${P(s[4])}</div>`}};
+
+function sbuild(){stop();bg('pond');app.style.justifyContent='';let n=0,score=0,hp=3;const N=8,voice=hasZh();
+ function end(){const win=hp>0;if(win)addXp(score*3);endScreen(win?(score>=N-1?'diam':'trophy'):'creeper',[win?(score>=N-1?'Алмазный результат!':'Уровень пройден!'):'Сердечки закончились.',`Верно: ${score} из ${N} · опыт: ${xp} XP`],sbuild)}
+ function next(){if(n>=N||hp<=0)return end();n++;
+  const s=spick(),ans=s[1],pool=[...new Set(SA().flatMap(x=>x[1]))].filter(t=>!ans.includes(t)),bad=[];
+  ans.forEach(t=>{if(bad.length<1&&[...t].some(c=>LOOK[c])){const a=[...t],i=a.findIndex(c=>LOOK[c]);a[i]=LOOK[a[i]];const v=a.join('');if(!ans.includes(v))bad.push(v)}});
+  const want=ans.length>9?2:3;sh(pool).forEach(t=>{if(bad.length<want&&!bad.includes(t))bad.push(t)});
+  const tiles=sh([...ans,...bad]).map(t=>({t})),slots=Array(ans.length).fill(-1);let locked=false,okState=false,first=true;
+  const msg0='Нажимай плитки по порядку. Ошибся — нажми на плитку в предложении, чтобы убрать её.';
+  function draw(msg){
+   app.innerHTML=`<div class="hud"><button class="btn sm w" id="back">◀ Меню</button><div class="sign">${ic('lantern','s')} Собери предложение · ${n}/${N}</div><div class="stat">${hearts(hp,3)} ${ic('star','s')} ${score}</div></div>
+   <div class="bar"><i style="width:${n/N*100}%"></i></div>
+   <div class="game"><div class="parch q"><div class="task">${voice?'Послушай и собери предложение':'Собери предложение по переводу'}</div><div class="mean" style="font-size:26px;padding:4px 6px;line-height:1.25">${s[3]}</div>
+    ${voice?`<button class="btn sm g say" style="margin-top:8px">🔊 Послушать</button>`:''}${locked?'':hintBtn}
+    <div class="sline">${slots.map((k,i)=>`<button class="sl2 ${k<0?'':locked?(okState?'res':'bad'):'f'}" data-s="${i}">${k<0?'?':`<span class="zh">${tiles[k].t}</span>`}</button>`).join('')}</div></div>
+   <div class="side"><div class="opts three tiles stiles">${tiles.map((t,i)=>`<button class="btn" data-t="${i}" ${slots.includes(i)||locked?'disabled':''}>${zh(t.t)}</button>`).join('')}</div>
+   <div class="darkp fb" id="fb">${msg}</div><div class="row"><button class="btn sm" id="clr" ${locked?'hidden':''}>Стереть</button><button class="btn g" id="nx" ${locked?'':'hidden'}>Дальше ▶</button></div></div></div>`;
+   $('#back').onclick=menu;$('#nx').onclick=next;bindHint(s);const sb=app.querySelector('.say');if(sb){sb.onclick=()=>say(s[2]);if(first){first=false;setTimeout(()=>say(s[2]),350)}}
+   app.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{if(locked)return;const i=slots.indexOf(-1);if(i<0)return;slots[i]=+b.dataset.t;slots.includes(-1)?draw(msg0):check()});
+   app.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{if(locked)return;slots[+b.dataset.s]=-1;draw(msg0)});
+   $('#clr').onclick=()=>{if(locked)return;slots.fill(-1);draw(msg0)};if(locked)$('#nx').focus()}
+  function check(){locked=true;okState=slots.map(i=>tiles[i].t).join('')===ans.join('');srate(s,okState);
+   if(okState){score++;addXp(12);beep(1)}else{hp--;beep(0)}
+   draw((okState?'✅ Верно! +12 XP':'❌ Не то. Правильно:')+'<br>'+sFb(s));if(!okState)$('.game').classList.add('shake')}
+  draw(msg0);}
+ next();}
+
+function cloze(){stop();bg('cherry');app.style.justifyContent='';let n=0,score=0,hp=3;const N=10;
+ function end(){const win=hp>0;if(win)addXp(score*2);endScreen(win?(score>=9?'diam':'trophy'):'creeper',[win?(score>=9?'Алмазный результат!':'Уровень пройден!'):'Сердечки закончились.',`Верно: ${score} из ${N} · опыт: ${xp} XP`],cloze)}
+ function next(){if(n>=N||hp<=0)return end();n++;
+  const s=spick(),toks=s[1],known=new Set(WALL.map(w=>w[0]));
+  let idx=toks.map((t,i)=>i).filter(i=>known.has(toks[i]));if(!idx.length)idx=toks.map((t,i)=>i).filter(i=>[...toks[i]].length>=2);if(!idx.length)idx=toks.map((t,i)=>i);
+  const ti=idx[Math.random()*idx.length|0],tg=toks[ti],L=[...tg].length;
+  const pool=[...new Set([...WALL.map(w=>w[0]),...SENT.flatMap(x=>x[1])])].filter(t=>t!==tg&&[...t].length===L&&!s[1].includes(t));
+  const o=[tg,...pick(pool,3)];
+  const q={tg,opts:sh(o).map(t=>({h:zh(t),ok:t===tg}))};
+  app.innerHTML=`<div class="hud"><button class="btn sm w" id="back">◀ Меню</button><div class="sign">${ic('coin','s')} Пропущенное слово · ${n}/${N}</div><div class="stat">${hearts(hp,3)} ${ic('star','s')} ${score}</div></div>
+  <div class="bar"><i style="width:${n/N*100}%"></i></div>
+  <div class="game"><div class="parch q"><div class="task">Какого слова не хватает?</div>
+   <div class="zh" style="font-size:44px;line-height:1.35;padding:6px 4px">${toks.map((t,i)=>i===ti?'<span class="blank">＿＿</span>':t).join('')}</div>
+   <div class="mean" style="font-size:24px;line-height:1.25;margin-top:6px">${s[3]}</div>${hasZh()?`<button class="btn sm g say" style="margin-top:8px">🔊 Послушать</button>`:''}</div>
+  <div class="side"><div class="opts">${q.opts.map((x,i)=>`<button class="btn" data-i="${i}">${x.h}</button>`).join('')}</div>
+  <div class="darkp fb" id="fb">Выбери слово, которое подходит.</div><div class="row"><button class="btn g" id="nx" hidden>Дальше ▶</button></div></div></div>`;
+  $('#back').onclick=menu;$('#nx').onclick=next;const sb=app.querySelector('.say');if(sb)sb.onclick=()=>say(s[2]);
+  const bs=[...app.querySelectorAll('.opts .btn')];
+  bs.forEach(b=>b.onclick=()=>{const x=q.opts[+b.dataset.i];bs.forEach((y,i)=>{y.disabled=true;if(q.opts[i].ok)y.classList.add('ok')});if(!x.ok)b.classList.add('no');
+   srate(s,x.ok);if(x.ok){score++;addXp(10);beep(1)}else{hp--;$('.game').classList.add('shake');beep(0)}
+   $('.stat').innerHTML=`${hearts(hp,3)} ${ic('star','s')} ${score}`;$('#fb').innerHTML=(x.ok?'✅ Верно! +10 XP':'❌ Мимо.')+'<br>'+sFb(s)+(wInfo(tg)?`<div style="margin-top:6px">🗝 ${wInfo(tg)}</div>`:'');$('#nx').hidden=false;$('#nx').focus()});}
+ next();}
+
+function swrite(){stop();bg('woodbg');app.style.justifyContent='';let n=0,score=0;const N=6,wrong=[];
+ function end(){addXp(score*4);endScreen(score>=N-1?'diam':'trophy',[`Записал верно: ${score} из ${N}`,wrong.length?'Повтори ещё раз:<br>'+wrong.map(s=>`${zh(s[2])}`).join('<br>'):'Все предложения — без ошибок!',`опыт: ${xp} XP`],swrite)}
+ function next(){if(n>=N)return end();n++;const s=spick();
+  app.innerHTML=`<div class="hud"><button class="btn sm w" id="back">◀ Меню</button><div class="sign">${ic('chest','s')} Пиши в тетради · ${n}/${N}</div><div class="stat">${ic('star','s')} ${score}</div></div>
+  <div class="bar"><i style="width:${n/N*100}%"></i></div>
+  <div class="game"><div class="parch q"><div class="task">Запиши предложение иероглифами в тетрадь</div><div class="mean" style="font-size:30px;line-height:1.25;padding:6px">${s[3]}</div>
+   ${hasZh()?`<button class="btn sm g say" style="margin-top:8px">🔊 Послушать</button>`:''}${hintBtn}</div>
+  <div class="side"><div class="darkp fb" id="fb" style="min-height:150px">Напиши предложение на бумаге, не подглядывая. Потом нажми «Показать ответ» и честно сравни иероглиф за иероглифом.</div>
+  <div class="row"><button class="btn g" id="rv">👁 Показать ответ</button></div><div class="row" id="jd" hidden><button class="btn g" id="yes">✅ Написал верно</button><button class="btn" id="no">❌ Ошибся</button></div></div></div>`;
+  $('#back').onclick=menu;bindHint(s);const sb=app.querySelector('.say');if(sb)sb.onclick=()=>say(s[2]);
+  $('#rv').onclick=()=>{$('#fb').innerHTML=sFb(s);$('#rv').hidden=true;$('#jd').hidden=false};
+  $('#yes').onclick=()=>{score++;srate(s,true);addXp(15);beep(1);next()};$('#no').onclick=()=>{srate(s,false);wrong.push(s);beep(0);next()};}
+ next();}
+
 // ===== мемори на двоих =====
 function mem(){stop();bg('fire');app.style.justifyContent='';const ws=pick(W,8);let cards=sh(ws.flatMap(w=>[{w,t:'k'},{w,t:'m'}])),open=[],lock=false,turn=0,sc=[0,0],msg='Открой две карточки: иероглифы и их перевод. Нашёл пару — прочитай слово вслух и ходи ещё раз.';const names=['Миша','Учитель'];
  const fs=w=>w[0].length>=3?27:w[0].length===2?40:54;
@@ -317,8 +419,9 @@ function boss(){stop();bg('creep');app.style.justifyContent='';const T=10;let t=
 
 // ===== книга слов =====
 function book(){stop();bg('woodbg');app.style.justifyContent='flex-start';
- app.innerHTML=`<div class="hud"><button class="btn sm w" id="back">◀ Меню</button><div class="sign">${ic('book','s')} Книга слов · урок 3</div><span></span></div>
- <div class="parch"><div class="wb">${W.map((w,i)=>`<div><span class="k zh">${w[0]}</span><span><b>${P(py(w))}</b> · ${w[2]} <small>(${w[3]})</small>${err(w[0])?` <span title="трудное слово">🔥</span>`:''}${w[4]?`<br><small>${w[4]}</small>`:''}${keysOf(w)?`<br><small>🗝 ${keysOf(w)}</small>`:''}</span><button class="btn sm g sp" data-i="${i}" aria-label="послушать">🔊</button></div>`).join('')}</div></div>`;
- $('#back').onclick=menu;app.querySelectorAll('.sp').forEach(b=>b.onclick=()=>say(W[+b.dataset.i][0]));}
+ app.innerHTML=`<div class="hud"><button class="btn sm w" id="back">◀ Меню</button><div class="sign">${ic('book','s')} Книга слов и предложений</div><span></span></div>
+ <div class="parch"><div class="bh">Слова · ${W.length}</div><div class="wb">${W.map((w,i)=>`<div><span class="k zh">${w[0]}</span><span><b>${P(py(w))}</b> · ${w[2]} <small>(${w[3]}, урок ${w[5]})</small>${err(w[0])?` <span title="трудное слово">🔥</span>`:''}${w[4]?`<br><small>${w[4]}</small>`:''}${keysOf(w)?`<br><small>🗝 ${keysOf(w)}</small>`:''}</span><button class="btn sm g sp" data-i="${i}" aria-label="послушать">🔊</button></div>`).join('')}</div></div>
+ <div class="parch" style="margin-top:12px"><div class="bh">Предложения из текстов · ${SA().length}</div><div class="sb">${SA().map((s,i)=>`<div><span><span class="zh" style="font-size:26px">${s[2]}</span><br><b>${P(s[4])}</b><br><small>${s[3]} (урок ${s[0]})${serr(s)?' 🔥':''}</small></span><button class="btn sm g ss" data-i="${i}" aria-label="послушать">🔊</button></div>`).join('')}</div></div>`;
+ $('#back').onclick=menu;app.querySelectorAll('.sp').forEach(b=>b.onclick=()=>say(W[+b.dataset.i][0]));const sa=SA();app.querySelectorAll('.ss').forEach(b=>b.onclick=()=>say(sa[+b.dataset.i][2]));}
 menu();
 </script></body></html>
