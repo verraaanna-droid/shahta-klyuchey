@@ -92,6 +92,13 @@ h1{font-family:Pix,Verdana,sans-serif;font-weight:400;font-size:44px;color:#fff;
 @media (max-width:520px){.modes{grid-template-columns:1fr}.opts .btn .zh{font-size:40px}.parch{border-width:24px 22px;border-image-width:24px 22px}.slot{width:76px;min-height:92px;padding:3px}.slot .zh{font-size:38px}.slot .l{font-size:11px}.op{font-size:24px}.recipe{gap:5px}.sign{font-size:12px}.task{font-size:17px}.opts .btn{min-height:76px;font-size:17px}.opts.three .btn .zh{font-size:32px}.hrt{width:22px;height:20px}.title .lamp{display:none}h1{font-size:24px}.stat{font-size:13px}}
 
 /* кухня слов */
+.le{color:#c0281c;font-weight:700}.fb .le,.darkp .le{color:#ff6a5a}
+.mk{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;border-radius:50%;background:#5a6bb0;color:#fff;font:700 17px Verdana,sans-serif;border:3px solid #17110c;margin:0 3px;vertical-align:middle;cursor:pointer;padding:0}
+.mk.sel{background:#e0a030}.mk.ok{background:#3d6b2c}.mk.no{background:#a83232}.mk.miss{outline:3px dashed var(--gold);outline-offset:2px}.mk.st{cursor:default}
+.hws{font-size:34px;line-height:1.9;padding:6px 4px;text-align:center}
+.hwb{margin-top:10px;font-size:17px;font-weight:400;line-height:1.45}.hwi{position:relative;margin:8px 0 0;padding:8px 52px 8px 0;border-bottom:2px solid #c9b48a}.hwi .hs{position:absolute;right:0;top:8px}
+@media (max-width:520px){.hws{font-size:26px}.mk{min-width:30px;height:30px;font-size:15px}}
+
 .chips{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;font-family:Pix,Verdana,sans-serif;font-size:15px;color:#fff;text-shadow:2px 2px 0 #000}
 .gh{font-family:Pix,Verdana,sans-serif;font-size:15px;color:var(--gold);text-shadow:2px 2px 0 #000;margin-top:16px}
 .gh+.modes{margin-top:8px}
@@ -215,6 +222,7 @@ const MODES=[['listen','lantern','Диктант на слух','Слушай с
  ['boss','creeper','Крипер-босс','10 секунд на вопрос, 10 сердечек','','creep'],['book','book','Книга слов и предложений','Шпаргалка: слова и фразы из учебника','w','woodbg']];
 const SMODES=[['sbuild','lantern','Собери предложение','Слушай и складывай фразу из плиток','g','pond'],['cloze','coin','Пропущенное слово','Какого слова не хватает в предложении?','w','cherry'],
  ['trans','chest','Переводчик','С русского на китайский, потом напиши слово','d','woodbg'],['run','table','Стройка предложений','Беги и собирай фразу из блоков','w','creep']];
+const HWMODES=[['hwcard','book','Шпаргалка со слайда','Правило и примеры: перепиши и выучи','w','woodbg'],['hwtap','emer','Где стоит «le»?','Нажми на букву: задания из ДЗ','g','cherry'],['hwrun','table','Беги: «le» на место','Беги на нужную букву в предложении','w','creep'],['hwans','trophy','Ответы и объяснения','Правильные ответы с разбором','d','woodbg']];
 const M=Object.fromEntries(MODES.map(m=>[m[0],m]));
 
 function menu(){stop();bg('fire');app.style.justifyContent='';
@@ -222,6 +230,7 @@ function menu(){stop();bg('fire');app.style.justifyContent='';
  const card=m=>`<button class="btn card ${m[4]} ${m[0]==='book'?'w2':''}" data-m="${m[0]}">${ic(m[1])}<span><b>${m[2]}</b><small>${m[3]}</small></span></button>`;
  app.innerHTML=`<div class="menuwrap"><div><div class="title"><i class="lamp"></i><div><h1>КУХНЯ СЛОВ</h1><div class="sub"><span class="zh">生词</span> · «Время учить китайский! 9» · ${W.length} слов · ${SA().length} предложений</div></div></div>
  <div class="chips">Повторяем: ${[1,2,3].map(n=>`<button class="btn sm ${scope&(1<<(n-1))?'g':''}" data-l="${n}">Урок ${n}</button>`).join('')}</div>
+ <div class="gh">Домашнее задание: суффикс le (了)</div><div class="modes">${HWMODES.map(card).join('')}</div>
  <div class="gh">Диктант: предложения</div><div class="modes">${SMODES.map(card).join('')}</div>
  <div class="gh">Слова</div><div class="modes">${MODES.map(card).join('')}</div></div>
  <div class="parch player"><div class="head"></div><div class="nm">${esc(PL)}</div>
@@ -230,7 +239,7 @@ function menu(){stop();bg('fire');app.style.justifyContent='';
  <button class="btn sm" id="chp" style="width:100%">👤 Сменить игрока</button>
  <a class="btn sm w" href="index.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;width:100%">⛏ Шахта ключей</a></div></div>`;
  $('#chp').onclick=nameScreen;app.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{const ns=scope^(1<<(+b.dataset.l-1));if(!ns)return;scope=ns;store.set('misha_scope',ns);applyScope();menu()});
- app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const m=b.dataset.m;({mem,boss,book,build,write,sbuild,cloze,trans,run}[m]||(()=>quiz(m)))()});}
+ app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const m=b.dataset.m;({mem,boss,book,build,write,sbuild,cloze,trans,run,hwcard,hwtap,hwrun,hwans}[m]||(()=>quiz(m)))()});}
 
 // ===== генераторы вопросов с вариантами =====
 function qMean(){const w=wpick(),rev=Math.random()<.5,opts=sh([w,...pick(W.filter(x=>x!==w),3)]);
@@ -482,6 +491,119 @@ function run(){stop();bg('creep');app.style.justifyContent='';let hp=7,score=0,n
  const loop=now=>{const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw(now/1000);raf=requestAnimationFrame(loop)};
  cv._dbg=()=>({tiles,pl,cr,ans,k,hp,done,n,score,step:update,draw,setTgt:(x,y)=>{tgt={x,y}}});
  round();raf=requestAnimationFrame(loop);}
+
+// ===== домашнее задание: суффикс 了 =====
+const HWD={"HW": [{"s": "妈妈吃(A)一碗(B)米饭(C)，喝(D)一杯(E)咖啡(F)。", "a": ["A", "D"], "ru": "Мама съела миску риса и выпила чашку кофе.", "ex": "Оба действия уже закончились, и у каждого объекта есть количество (一碗米饭, 一杯咖啡). Поэтому 了 ставим сразу после каждого глагола: 吃了…，喝了….", "full": "妈妈吃了一碗米饭，喝了一杯咖啡。", "py": "māma chī le yī wǎn mǐfàn, hē le yī bēi kāfēi"}, {"s": "我们吃(A)饭就(B)去(C)公园。", "a": ["A"], "ru": "Как поедим, сразу пойдём в парк.", "ex": "Это модель со слайда: сначала закончилось первое действие (吃饭), потом начинается второе (去公园). 了 стоит после первого глагола: 吃了饭就去….", "full": "我们吃了饭就去公园。", "py": "wǒmen chī le fàn jiù qù gōngyuán"}, {"s": "我喝(A)一杯(B)咖啡就(C)去(D)图书馆(E)。", "a": ["A"], "ru": "Выпью чашку кофе и сразу пойду в библиотеку.", "ex": "Та же модель: первое действие (喝一杯咖啡) завершается, затем второе (去图书馆). 了 ставим сразу после первого глагола: 喝了一杯咖啡就去….", "full": "我喝了一杯咖啡就去图书馆。", "py": "wǒ hē le yī bēi kāfēi jiù qù túshūguǎn"}, {"s": "我昨天去(A)新华书商买(B)三(C)本书(D)。", "a": ["B"], "ru": "Вчера я ходил в книжный магазин «Синьхуа» и купил три книги.", "ex": "Завершённое действие в прошлом (昨天) — покупка 买, и у объекта есть количество 三本书. 了 идёт сразу после 买. После 去 (A) не ставим: это только дорога к магазину. (В задании написано 书商; обычно говорят 书店.)", "full": "我昨天去新华书商买了三本书。", "py": "wǒ zuótiān qù Xīnhuá shūshāng mǎi le sān běn shū"}, {"s": "他在晚会上(A)唱(B)三(C)首歌(D)。", "a": ["B"], "ru": "На вечере он спел три песни.", "ex": "Действие закончилось (на вечере, в прошлом), у объекта есть количество 三首歌. 了 ставим сразу после глагола 唱.", "full": "他在晚会上唱了三首歌。", "py": "tā zài wǎnhuì shang chàng le sān shǒu gē"}, {"s": "我跟朋友(A)去(B)饭馆吃(C)北京烤鸭(D)。", "a": ["C"], "ru": "Я с другом ходил в ресторан и поел утку по-пекински.", "ex": "Главное завершённое действие — 吃 (поесть), а 去饭馆 — дорога к цели. У объекта есть определение (北京烤鸭). Поэтому 了 стоит после 吃.", "full": "我跟朋友去饭馆吃了北京烤鸭。", "py": "wǒ gēn péngyou qù fànguǎn chī le Běijīng kǎoyā"}], "EX": [{"h": "I. В будущем времени, при смене одного действия другим.", "t": "将来", "items": [["下了课我们就回宿舍。", "Как только закончатся занятия, мы вернёмся в общежитие.", "xià le kè wǒmen jiù huí sùshè"], ["你买了礼物再去看朋友吧。", "Сначала купи подарок, а потом сходи навестить друга.", "nǐ mǎi le lǐwù zài qù kàn péngyou ba"]]}, {"h": "II. В прошедшем времени, при смене одного действия другим.", "t": "过去", "items": [["他看了新闻就骑车去看电影了。", "Он посмотрел новости и поехал на велосипеде в кино.", "tā kàn le xīnwén jiù qí chē qù kàn diànyǐng le"], ["我和弟弟吃了饭就走了。", "Мы с братом поели и ушли.", "wǒ hé dìdi chī le fàn jiù zǒu le"]]}, {"h": "III. В повседневной ситуации (смена действия).", "t": "平常", "items": [["他常常吃了饭去散步。", "Он обычно после еды идёт гулять.", "tā chángcháng chī le fàn qù sànbù"]]}], "AUD": {"我昨天去新华书商买了三本书。": "e4264e039e.mp3", "妈妈吃了一碗米饭，喝了一杯咖啡。": "8d81394038.mp3", "我们吃了饭就去公园。": "4d564d6de2.mp3", "我喝了一杯咖啡就去图书馆。": "379b1da139.mp3", "他在晚会上唱了三首歌。": "2b30ce72e8.mp3", "我跟朋友去饭馆吃了北京烤鸭。": "47b4e8c541.mp3", "你买了礼物再去看朋友吧。": "dd497af64a.mp3", "下了课我们就回宿舍。": "3394c5f057.mp3", "他看了新闻就骑车去看电影了。": "8fddab676c.mp3", "我和弟弟吃了饭就走了。": "7338585a51.mp3", "他常常吃了饭去散步。": "b3876cb478.mp3"}};
+Object.assign(AUD,HWD.AUD);
+const HW=HWD.HW,HWEX=HWD.EX;
+const hwParse=h=>({parts:h.s.split(/\([A-F]\)/),marks:[...h.s.matchAll(/\(([A-F])\)/g)].map(m=>m[1])});
+const redLe=t=>t.replace('了','<span class="le">了</span>');
+const hwFullHtml=h=>{const{parts,marks}=hwParse(h);return parts.map((p,i)=>p+(marks[i]&&h.a.includes(marks[i])?'<span class="le">了</span>':'')).join('')};
+const sameSet=(a,b)=>a.size===b.length&&b.every(x=>a.has(x));
+const HINT_LE='了 ставится сразу после глагола, действие которого уже закончилось. Количество или определение у объекта (一碗, 三本, 北京) подсказывает, что 了 стоит после глагола.';
+const hwMarks=(h,state)=>{const{parts,marks}=hwParse(h);return parts.map((p,i)=>`<span class="zh">${p}</span>${marks[i]?`<button class="mk ${state(marks[i])}" data-m="${marks[i]}">${marks[i]}</button>`:''}`).join('')};
+const hwEndBtns=()=>{const r=app.querySelector('.end .row');if(r){const b=document.createElement('button');b.className='btn';b.textContent='Ответы ▶';b.onclick=hwans;r.appendChild(b)}};
+
+// --- шпаргалка со слайда ---
+function hwcard(){stop();bg('woodbg');app.style.justifyContent='flex-start';
+ app.innerHTML=`<div class="hud"><button class="btn sm w" id="back">◀ Меню</button><div class="sign">${ic('book','s')} Шпаргалка со слайда</div><span></span></div>
+ <div class="parch"><div class="bh" style="text-align:center;font-size:22px">Может использоваться:</div>
+ <div class="zh" style="font-size:26px;color:#a8322a;text-align:center;margin:6px 0 2px">第一个动作完成后，第二个动作发生</div>
+ <div style="text-align:center;font-weight:400;margin-bottom:10px">Когда первое действие завершилось, происходит второе.</div>
+ ${HWEX.map(g=>`<div class="hwb"><div style="font-size:18px"><b>${g.h}</b> <span class="zh" style="color:#a8322a">（${g.t}）</span></div>${g.items.map(it=>`<div class="hwi"><span class="zh" style="font-size:28px">${redLe(it[0])}</span><br><b>${P(it[2])}</b><br><small>${it[1]}</small><button class="btn sm g hs" data-t="${it[0]}" aria-label="послушать">🔊</button></div>`).join('')}</div>`).join('')}
+ <div class="hwb"><b>Запомни:</b> красный <span class="le">了</span> стоит сразу после первого глагола: Глагол 1 + <span class="le">了</span> (+ объект) + 就 / 再 + Глагол 2. Перевод примеров на русский — мой.</div></div>`;
+ $('#back').onclick=menu;app.querySelectorAll('.hs').forEach(b=>b.onclick=()=>say(b.dataset.t));}
+
+// --- игра: нажми на букву, где стоит 了 ---
+function hwtap(){stop();bg('cherry');app.style.justifyContent='';let queue=sh(HW),first=0,steps=0;const redo=new Set();
+ function end(){addXp(first*2);endScreen(first===HW.length?'diam':'trophy',[`С первой попытки: ${first} из ${HW.length}`,'Теперь загляни в «Ответы и объяснения»: там всё разобрано.',`опыт: ${xp} XP`],hwtap);hwEndBtns()}
+ function next(){if(!queue.length)return end();const h=queue.shift();steps++;const sel=new Set();let checked=false;
+  const draw=(res)=>{
+   const st=l=>checked?(h.a.includes(l)&&sel.has(l)?'ok':sel.has(l)?'no':h.a.includes(l)?'miss':''):(sel.has(l)?'sel':'');
+   app.innerHTML=`<div class="hud"><button class="btn sm w" id="back">◀ Меню</button><div class="sign">${ic('emer','s')} Где стоит «le»? · ${HW.length-queue.length}/${HW.length}</div><span></span></div>
+   <div class="bar"><i style="width:${(HW.length-queue.length-1)/HW.length*100}%"></i></div>
+   <div class="game" style="grid-template-columns:1fr"><div class="parch q"><div class="task">Нажми на букву, после которой нужно поставить <span class="le">了</span> (букв может быть одна или две)</div>
+    <div class="hws">${hwMarks(h,st)}</div></div>
+   <div class="darkp fb" id="fb">${res||'Выбери место (или два) и нажми «Проверить».'}</div>
+   <div class="row"><button class="btn g" id="chk" ${checked?'hidden':''}>Проверить</button><button class="btn g" id="nx" ${checked?'':'hidden'}>Дальше ▶</button></div></div>`;
+   $('#back').onclick=menu;app.querySelectorAll('.mk').forEach(b=>b.onclick=()=>{if(checked)return;const m=b.dataset.m;sel.has(m)?sel.delete(m):sel.add(m);draw()});
+   $('#chk').onclick=()=>{if(!sel.size){$('#fb').textContent='Сначала выбери хотя бы одну букву.';return}checked=true;const ok=sameSet(sel,h.a);
+    if(ok){beep(1);if(!redo.has(h.s)){first++;addXp(10)}else addXp(4)}else{beep(0);if(!redo.has(h.s)){redo.add(h.s);queue.push(h)}}
+    const body=`<div class="zh" style="font-size:30px;color:#fff;line-height:1.35">${hwFullHtml(h)}</div><div style="margin-top:4px">${P(h.py)}</div><div style="margin-top:4px">${h.ru}</div><div style="margin-top:6px;font-weight:400">${h.ex}</div>`;
+    draw((ok?'✅ Верно!':`❌ Не совсем. Правильно: ${h.a.join(' и ')}.`)+'<br>'+body);say(h.full);$('#nx').focus()};
+   $('#nx').onclick=next}
+  draw()}
+ next()}
+
+// --- бегалка: встань на нужную букву ---
+function hwrun(){stop();bg('creep');app.style.justifyContent='';let hp=7,score=0,n=0;const W_=800,H_=470,SPD=205,list=sh(HW),N=list.length;
+ app.innerHTML=`<div class="hud"><button class="btn sm w" id="back">◀ Меню</button><div class="sign">${ic('emer','s')} Беги: «le» на место</div><div class="stat" id="st"></div></div>
+ <div class="bar"><i id="pb" style="width:0%"></i></div>
+ <div class="darkp" id="top" style="text-align:center;padding:8px 10px"></div>
+ <canvas id="rc" style="width:min(100%,calc(58vh*800/470));aspect-ratio:800/470;margin:0 auto;touch-action:none;border:4px solid #17110c;box-shadow:0 0 0 2px #6b4a2c;background:#2c4a1e;display:block"></canvas>
+ <div class="darkp fb" id="fb" style="min-height:0;text-align:center">Беги на букву, после которой стоит 了 (их может быть две). Не та буква и крипер отнимают сердечки. Управление: стрелки или WASD, либо веди пальцем по полю.</div>`;
+ $('#back').onclick=menu;
+ const cv=$('#rc'),d=window.devicePixelRatio||1;cv.width=W_*d;cv.height=H_*d;const g=cv.getContext('2d');g.scale(d,d);
+ const imgOf=nm=>{const m=/url\(["']?(.*?)["']?\)/.exec(getComputedStyle(document.documentElement).getPropertyValue('--'+nm));const i=new Image();if(m)i.src=m[1];return i};
+ const IH=imgOf('head'),IC=imgOf('creeper');
+ let h,pads,pl,cr,tgt=null,hold=false,inv=0,done=false,raf=0,last=performance.now(),flash=0,need;
+ const keys={},kd=e=>{const kk=e.key.toLowerCase();if(['arrowleft','arrowright','arrowup','arrowdown','w','a','s','d'].includes(kk)){keys[kk]=1;e.preventDefault()}},ku=e=>{delete keys[e.key.toLowerCase()]};
+ window.addEventListener('keydown',kd);window.addEventListener('keyup',ku);
+ cleanup=()=>{cancelAnimationFrame(raf);window.removeEventListener('keydown',kd);window.removeEventListener('keyup',ku)};
+ const pos=e=>{const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*W_/r.width,y:(e.clientY-r.top)*H_/r.height}};
+ cv.onpointerdown=e=>{hold=true;tgt=pos(e);try{cv.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault()};
+ cv.onpointermove=e=>{if(hold)tgt=pos(e)};cv.onpointerup=cv.onpointercancel=()=>{hold=false};
+ const stat=()=>{$('#st').innerHTML=`${hearts(hp,7)} ${ic('star','s')} ${score}`};
+ const topHtml=()=>`<div class="hws" style="font-size:22px">${hwMarks(h,()=>'st')}</div>`;
+ function round(){h=list[n];n++;done=false;inv=0;tgt=null;need=new Set(h.a);
+  $('#pb').style.width=(n-1)/N*100+'%';$('#top').innerHTML=topHtml();
+  pl={x:W_/2,y:H_-60};cr={x:Math.random()<.5?60:W_-60,y:50,delay:3.5};
+  const letters=['A','B','C','D','E','F'].filter(l=>hwParse(h).marks.includes(l));pads=[];
+  for(const l of sh(letters)){let tries=0,x,y;do{x=70+Math.random()*(W_-140);y=60+Math.random()*(H_-170);tries++}
+   while(tries<100&&(pads.some(o=>Math.hypot(o.x-x,o.y-y)<110)||Math.hypot(x-pl.x,y-pl.y)<120));
+   pads.push({l,x,y,ph:Math.random()*6,bad:0,cool:0,ok:0})}
+  stat();}
+ function finish(win){cleanup();cleanup=null;if(win)addXp(score*4);
+  endScreen(win?(score>=N?'diam':'trophy'):'creeper',[win?'Все предложения пройдены!':'Сердечки закончились.',`Предложений собрано: ${score} из ${N} · опыт: ${xp} XP`,'Ответы и объяснения — в меню.'],hwrun);hwEndBtns()}
+ const hit=(ax,ay,aw,ah,bx,by,bw,bh)=>Math.abs(ax-bx)<(aw+bw)/2&&Math.abs(ay-by)<(ah+bh)/2;
+ function update(dt){
+  if(!done){let vx=(keys.arrowright||keys.d?1:0)-(keys.arrowleft||keys.a?1:0),vy=(keys.arrowdown||keys.s?1:0)-(keys.arrowup||keys.w?1:0);
+   if(vx||vy){const l=Math.hypot(vx,vy);vx/=l;vy/=l;tgt=null}else if(tgt){const dx=tgt.x-pl.x,dy=tgt.y-pl.y,l=Math.hypot(dx,dy);if(l>8){vx=dx/l;vy=dy/l}else if(!hold)tgt=null}
+   pl.x=Math.max(24,Math.min(W_-24,pl.x+vx*SPD*dt));pl.y=Math.max(24,Math.min(H_-24,pl.y+vy*SPD*dt));
+   if(cr.delay>0)cr.delay-=dt;else{const dx=pl.x-cr.x,dy=pl.y-cr.y,l=Math.hypot(dx,dy)||1,sp=38+n*5;cr.x+=dx/l*sp*dt;cr.y+=dy/l*sp*dt}
+   if(inv>0)inv-=dt;pads.forEach(o=>{if(o.cool>0)o.cool-=dt;if(o.bad>0)o.bad-=dt});
+   for(const o of pads){if(o.ok||!hit(pl.x,pl.y,36,36,o.x,o.y,56,56))continue;
+    if(need.has(o.l)){o.ok=1;need.delete(o.l);beep(1);addXp(3);
+     if(!need.size){done=true;score++;addXp(10);say(h.full);$('#fb').innerHTML=`<div class="zh" style="font-size:26px;color:#fff">${hwFullHtml(h)}</div><div>${h.ru}</div>`;stat();setTimeout(()=>{if(n>=N)finish(true);else round()},2600)}}
+    else if(inv<=0&&o.cool<=0){hp--;inv=1.2;o.cool=1.2;o.bad=.6;beep(0);flash=.25;const dx=pl.x-o.x,dy=pl.y-o.y,l=Math.hypot(dx,dy)||1;pl.x=Math.max(24,Math.min(W_-24,pl.x+dx/l*60));pl.y=Math.max(24,Math.min(H_-24,pl.y+dy/l*60));stat();if(hp<=0){done=true;setTimeout(()=>finish(false),600)}break}}
+   if(!done&&inv<=0&&hit(pl.x,pl.y,34,34,cr.x,cr.y,34,34)){hp--;inv=1.5;beep(0);flash=.25;cr.x=Math.random()<.5?60:W_-60;cr.y=50;cr.delay=2.5;stat();if(hp<=0){done=true;setTimeout(()=>finish(false),600)}}}
+  if(flash>0)flash-=dt}
+ function draw(t){g.clearRect(0,0,W_,H_);
+  for(let y=0;y<H_;y+=40)for(let x=0;x<W_;x+=40){g.fillStyle=((x+y)/40)%2?'#3a5f26':'#335523';g.fillRect(x,y,40,40)}
+  pads.forEach(o=>{const by=Math.sin(t*3+o.ph)*3,shk=o.bad>0?Math.sin(t*60)*5:0;
+   g.fillStyle='rgba(0,0,0,.25)';g.beginPath();g.ellipse(o.x,o.y+32,28,8,0,0,7);g.fill();
+   g.fillStyle=o.ok?'#3d6b2c':o.bad>0?'#a83232':'#5a6bb0';g.beginPath();g.arc(o.x+shk,o.y+by,34,0,7);g.fill();g.lineWidth=4;g.strokeStyle='#17110c';g.stroke();
+   g.fillStyle='#fff';g.font='700 34px Verdana,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(o.ok?'了':o.l,o.x+shk,o.y+by+2)});
+  if(IC.complete&&IC.naturalWidth){g.imageSmoothingEnabled=false;g.drawImage(IC,cr.x-20,cr.y-20,40,40)}else{g.fillStyle='#4f9e22';g.fillRect(cr.x-17,cr.y-17,34,34)}
+  if(inv<=0||Math.floor(t*10)%2){if(IH.complete&&IH.naturalWidth){g.imageSmoothingEnabled=false;g.drawImage(IH,pl.x-22,pl.y-22,44,44)}else{g.fillStyle='#e0b080';g.fillRect(pl.x-18,pl.y-18,36,36)}}
+  if(flash>0){g.fillStyle='rgba(214,40,32,'+flash*1.2+')';g.fillRect(0,0,W_,H_)}}
+ const loop=now=>{const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);draw(now/1000);raf=requestAnimationFrame(loop)};
+ cv._dbg=()=>({pads,pl,cr,h,need,hp,done,n,score,step:update,draw,setTgt:(x,y)=>{tgt={x,y}}});
+ round();raf=requestAnimationFrame(loop);}
+
+// --- ответы и объяснения ---
+function hwans(){stop();bg('woodbg');app.style.justifyContent='flex-start';
+ app.innerHTML=`<div class="hud"><button class="btn sm w" id="back">◀ Меню</button><div class="sign">${ic('trophy','s')} Ответы и объяснения</div><span></span></div>
+ <div class="parch"><div class="bh">Правило (со слайда)</div>
+ <div class="hwb"><span class="zh" style="color:#a8322a;font-size:22px">第一个动作完成后，第二个动作发生</span><br>Когда первое действие завершилось, происходит второе. <span class="le">了</span> ставится сразу после глагола завершённого действия:<br>
+ <b>1.</b> Глагол 1 + <span class="le">了</span> + (объект) + 就 / 再 + Глагол 2: <span class="zh">吃<span class="le">了</span>饭就去公园</span>.<br>
+ <b>2.</b> Когда действие одно, закончено и у объекта есть количество или определение, <span class="le">了</span> тоже сразу после глагола: <span class="zh">买<span class="le">了</span>三本书</span>.<br>
+ <b>3.</b> В этом задании <span class="le">了</span> не ставится после 就, внутри слов-объектов и после 去, если оно только «дорога» к главному действию.</div></div>
+ ${HW.map((h,i)=>`<div class="parch" style="margin-top:12px"><div class="bh">Предложение ${i+1}: ответ ${h.a.join(' и ')}</div>
+  <div class="zh" style="font-size:24px">${hwMarks(h,l=>h.a.includes(l)?'ok':'')}</div>
+  <div class="hwb"><div class="zh" style="font-size:30px">${hwFullHtml(h)}</div><b>${P(h.py)}</b><br>${h.ru}<button class="btn sm g hs" data-t="${h.full}" aria-label="послушать" style="margin-left:8px">🔊</button><br><span style="font-weight:400">${h.ex}</span></div></div>`).join('')}
+ <div class="parch" style="margin-top:12px"><div class="hwb"><b>Для проверки:</b> ответы выше сделаны по правилу со слайда. Если учитель объяснял иначе, сверься с тетрадью.</div></div>`;
+ $('#back').onclick=menu;app.querySelectorAll('.hs').forEach(b=>b.onclick=()=>say(b.dataset.t));}
 
 // ===== мемори на двоих =====
 function mem(){stop();bg('fire');app.style.justifyContent='';const ws=pick(W,8);let cards=sh(ws.flatMap(w=>[{w,t:'k'},{w,t:'m'}])),open=[],lock=false,turn=0,sc=[0,0],msg='Открой две карточки: иероглифы и их перевод. Нашёл пару — прочитай слово вслух и ходи ещё раз.';const names=[PL||'Игрок','Учитель'];
