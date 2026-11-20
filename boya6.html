@@ -200,6 +200,7 @@ button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:3px so
   .stage{padding:20px 14px}
   .mem{grid-template-columns:repeat(3,1fr)}
 }
+@media (max-width:520px){.ghead .meta{order:3;margin-left:auto}.ghead h2{flex-basis:calc(100% - 140px)}}
 @media (max-width:420px){.opts{grid-template-columns:1fr}.tiles{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 </style>
@@ -344,6 +345,8 @@ window.LESSON = {
   WRITE: ['点','几','半','刻','差','分','早','现','在','见'],
   WRITE_INFO: { '点':['diǎn','час'], '几':['jǐ','сколько'], '半':['bàn','половина'], '刻':['kè','четверть часа'], '差':['chà','не хватает'], '分':['fēn','минута'], '早':['zǎo','рано'], '现':['xiàn','сейчас (现在)'], '在':['zài','находиться'], '见':['jiàn','видеть'] }
 };
+
+window.LESSON.nav = [{"href": "boya.html", "label": "Все уроки", "on": false}, {"href": "boya1.html", "label": "Урок 1", "on": false}, {"href": "boya2.html", "label": "Урок 2", "on": false}, {"href": "boya3.html", "label": "Урок 3", "on": false}, {"href": "boya4.html", "label": "Урок 4", "on": false}, {"href": "boya5.html", "label": "Урок 5", "on": false}, {"href": "boya6.html", "label": "Урок 6", "on": true}, {"href": "boya-povtor.html", "label": "Повторение 1–5", "on": false}];
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5.0/dist/hanzi-writer.min.js"></script>
