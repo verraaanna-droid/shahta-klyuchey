@@ -122,6 +122,13 @@ button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:3px so
 .chip:hover{background:var(--mist)}
 .chip.used{visibility:hidden}
 
+.chip{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.chip.dragging{opacity:.3}
+.ghost{position:fixed;pointer-events:none;z-index:60;margin:0;transform:rotate(-3deg) scale(1.06);box-shadow:0 14px 28px -10px rgba(36,48,42,.45);cursor:grabbing}
+.answer.hot,.bank.hot{outline:3px dashed var(--lotus);outline-offset:3px}
+.slot.hot{border-color:var(--lotus);background:var(--lotus-mist)}
+.answer .hint{color:var(--muted);font-size:15px}
+
 /* memory */
 .mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
 .mcard{aspect-ratio:3/4;border-radius:14px;position:relative;perspective:600px}
@@ -495,6 +502,59 @@ function runQuestions(id, qs, opts = {}) {
 }
 function mcGame(kind) { const id = { listen: 'listen', meaning: 'meaning', reverse: 'say', tones: 'tones' }[kind]; runQuestions(id, weighted(10).map(w => makeQ(kind, w))); }
 
+/* ===== drag & drop ===== */
+function dragify(chip, opt) {
+  chip.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return; e.preventDefault();
+    const sx = e.clientX, sy = e.clientY, zs = opt.zones(); let ghost = null, moved = false, over = null;
+    const move = ev => {
+      if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 6) return;
+      if (!moved) { moved = true; ghost = chip.cloneNode(true); ghost.classList.add('ghost'); ghost.classList.remove('sel'); const r = chip.getBoundingClientRect(); ghost.style.width = r.width + 'px'; document.body.appendChild(ghost); chip.classList.add('dragging'); }
+      ghost.style.left = ev.clientX - ghost.offsetWidth / 2 + 'px'; ghost.style.top = ev.clientY - ghost.offsetHeight / 2 + 'px';
+      const hit = document.elementFromPoint(ev.clientX, ev.clientY); const z = (hit && zs.find(z => z.contains(hit))) || null;
+      if (z !== over) { if (over) over.classList.remove('hot'); over = z; if (over) over.classList.add('hot'); }
+    };
+    const up = ev => {
+      removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+      if (over) over.classList.remove('hot');
+      if (!moved) { if (opt.onTap) opt.onTap(); return; }
+      ghost.remove(); chip.classList.remove('dragging'); opt.onDrop(over, ev.clientX, ev.clientY);
+    };
+    addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  });
+  chip.addEventListener('click', e => { if (e.detail === 0 && opt.onTap) opt.onTap(); });
+}
+function assembler(st, tokens, need, onFull) {
+  const ans = el('div', 'answer'), bank = el('div', 'bank'); st.append(ans, bank);
+  let seq = [], locked = false;
+  const zones = () => [ans, bank];
+  function chip(id, inAns) {
+    const c = el('button', 'chip', tokens[id]); c.type = 'button'; c.dataset.id = id;
+    const tap = () => { if (locked) return; if (inAns) seq = seq.filter(v => v !== id); else if (seq.length < need) seq.push(id); changed(); };
+    dragify(c, { zones, onTap: tap, onDrop: (z, x, y) => {
+      if (locked) return;
+      if (z === ans) {
+        const kids = [...ans.querySelectorAll('.chip')].filter(k => +k.dataset.id !== id);
+        if (!inAns && seq.length >= need) { changed(); return; }
+        let idx = kids.findIndex(k => { const r = k.getBoundingClientRect(); return y < r.top || (y <= r.bottom && x < r.left + r.width / 2); });
+        if (idx < 0) idx = kids.length;
+        seq = kids.map(k => +k.dataset.id); seq.splice(idx, 0, id);
+      } else if (inAns && z !== ans) seq = seq.filter(v => v !== id);
+      changed();
+    } });
+    return c;
+  }
+  function render() {
+    ans.innerHTML = ''; bank.innerHTML = '';
+    if (!seq.length) ans.appendChild(el('span', 'hint', 'Перетащи карточки сюда'));
+    seq.forEach(id => ans.appendChild(chip(id, true)));
+    tokens.forEach((t, id) => { if (!seq.includes(id)) bank.appendChild(chip(id, false)); });
+  }
+  function changed() { ans.classList.remove('bad'); render(); if (seq.length === need) onFull(seq.map(id => tokens[id])); }
+  render();
+  return { lock() { locked = true; ans.classList.add('ok'); [...st.querySelectorAll('.chip')].forEach(c => c.style.cursor = 'default'); }, bad() { ans.classList.add('bad'); } };
+}
+
 /* ===== build word ===== */
 function buildWordGame() {
   const multi = W.filter(w => [...w.h].filter(isHan).length > 1 && [...w.h].every(isHan)); const qs = shuffle(multi).slice(0, 8); let i = 0, ok = 0; const ds = dots(qs.length);
@@ -502,15 +562,13 @@ function buildWordGame() {
     if (i >= qs.length) return finish('build', ok, qs.length);
     $('#gMeta').textContent = `${i + 1} / ${qs.length} · верно ${ok}`; [...ds].forEach((d, k) => d.classList.toggle('now', k === i));
     const w = qs[i], target = [...w.h]; const extra = pick([...new Set(W.flatMap(x => [...x.h].filter(isHan)))].filter(c => !target.includes(c)), 3);
-    const st = $('#stage'); st.innerHTML = `<div class="task">Сложи слово из иероглифов</div><div class="prompt-ru">${w.ru}</div><div class="py prompt-py">${w.py}</div>`;
-    const ans = el('div', 'answer'); const bank = el('div', 'bank'); const f = el('div', 'fb'); const nx = el('div', 'under'); st.append(ans, bank, f, nx);
-    const picked = [];
-    shuffle([...target, ...extra]).forEach(c => { const b = el('button', 'chip', c); b.type = 'button'; b.onclick = () => { if (picked.length >= target.length) return; b.classList.add('used'); picked.push(b); const a = el('button', 'chip', c); a.type = 'button'; a.onclick = () => { if (ans.classList.contains('ok')) return; const k = [...ans.children].indexOf(a); picked.splice(k, 1)[0].classList.remove('used'); a.remove(); ans.classList.remove('bad'); }; ans.appendChild(a); if (picked.length === target.length) check(); }; bank.appendChild(b); });
-    function check() {
-      const got = picked.map(p => p.textContent).join('');
-      if (got === w.h) { ans.classList.add('ok'); ok++; addXp(10); hardOk(w.h); ds[i].classList.add('ok'); f.className = 'fb ok'; f.textContent = `Верно: ${w.h} ${w.py}`; speak(w.h); const go = el('button', 'btn solid', 'Дальше'); go.type = 'button'; go.onclick = () => { i++; show(); }; nx.appendChild(go); go.focus(); }
-      else { ans.classList.add('bad'); hardAdd(w.h); ds[i].classList.add('bad'); f.className = 'fb bad'; f.textContent = 'Не тот порядок или не те иероглифы. Нажми на плитку сверху, чтобы убрать её.'; }
-    }
+    const st = $('#stage'); st.innerHTML = `<div class="task">Перетащи иероглифы в рамку, чтобы получилось слово</div><div class="prompt-ru">${w.ru}</div><div class="py prompt-py">${w.py}</div>`;
+    const f = el('div', 'fb'), nx = el('div', 'under'); let failed = false;
+    const as = assembler(st, shuffle([...target, ...extra]), target.length, seq => {
+      if (seq.join('') === w.h) { as.lock(); if (!failed) { ok++; ds[i].classList.add('ok'); hardOk(w.h); } addXp(failed ? 5 : 10); f.className = 'fb ok'; f.textContent = `Верно: ${w.h} ${w.py}`; speak(w.h); const go = el('button', 'btn solid', i + 1 < qs.length ? 'Дальше' : 'Итог'); go.type = 'button'; go.onclick = () => { i++; show(); }; nx.appendChild(go); go.focus(); }
+      else { as.bad(); failed = true; hardAdd(w.h); ds[i].classList.add('bad'); f.className = 'fb bad'; f.textContent = 'Не тот порядок или не те иероглифы. Перетащи карточки по-другому.'; }
+    });
+    st.append(f, nx);
   }
   show();
 }
@@ -568,15 +626,14 @@ function orderGame() {
     if (i >= qs.length) return finish('order', ok, qs.length);
     $('#gMeta').textContent = `${i + 1} / ${qs.length} · верно ${ok}`; [...ds].forEach((d, k) => d.classList.toggle('now', k === i));
     const s = qs[i], full = sFull(s); const st = $('#stage');
-    st.innerHTML = `<div class="task">Послушай и сложи фразу</div><button class="listen" type="button" aria-label="Прослушать фразу">${SPK}</button><div class="prompt-ru" style="font-size:24px">${s.ru}</div>`;
+    st.innerHTML = `<div class="task">Послушай и перетащи слова в правильном порядке</div><button class="listen" type="button" aria-label="Прослушать фразу">${SPK}</button><div class="prompt-ru" style="font-size:24px">${s.ru}</div>`;
     st.querySelector('.listen').onclick = () => speak(full); setTimeout(() => speak(full), 300);
-    const ans = el('div', 'answer'); const bank = el('div', 'bank'); const f = el('div', 'fb'); const nx = el('div', 'under'); st.append(ans, bank, f, nx);
-    const picked = []; let tries = 0;
-    shuffle(s.zh.map((t, k) => ({ t, k }))).forEach(({ t }) => { const b = el('button', 'chip', t); b.type = 'button'; b.onclick = () => { b.classList.add('used'); picked.push(b); const a = el('button', 'chip', t); a.type = 'button'; a.onclick = () => { if (ans.classList.contains('ok')) return; const k = [...ans.children].indexOf(a); picked.splice(k, 1)[0].classList.remove('used'); a.remove(); ans.classList.remove('bad'); }; ans.appendChild(a); if (picked.length === s.zh.length) check(); }; bank.appendChild(b); });
-    function check() {
-      if (picked.map(p => p.textContent).join('') === s.zh.join('')) { ans.classList.add('ok'); if (!tries) { ok++; ds[i].classList.add('ok'); } else ds[i].classList.add('bad'); addXp(tries ? 5 : 15); f.className = 'fb ok'; f.innerHTML = `${full}<br><span class="py">${s.py}</span>`; const go = el('button', 'btn solid', i + 1 < qs.length ? 'Дальше' : 'Итог'); go.type = 'button'; go.onclick = () => { i++; show(); }; nx.appendChild(go); go.focus(); }
-      else { tries++; ans.classList.add('bad'); f.className = 'fb bad'; f.textContent = 'Порядок не тот. Убери плитки нажатием и попробуй ещё.'; }
-    }
+    const f = el('div', 'fb'), nx = el('div', 'under'); let tries = 0;
+    const as = assembler(st, shuffle(s.zh), s.zh.length, seq => {
+      if (seq.join('') === s.zh.join('')) { as.lock(); if (!tries) { ok++; ds[i].classList.add('ok'); } else ds[i].classList.add('bad'); addXp(tries ? 5 : 15); f.className = 'fb ok'; f.innerHTML = `${full}<br><span class="py">${s.py}</span>`; speak(full); const go = el('button', 'btn solid', i + 1 < qs.length ? 'Дальше' : 'Итог'); go.type = 'button'; go.onclick = () => { i++; show(); }; nx.appendChild(go); go.focus(); }
+      else { tries++; as.bad(); f.className = 'fb bad'; f.textContent = 'Порядок не тот. Перетащи слова на другие места.'; }
+    });
+    st.append(f, nx);
   }
   show();
 }
@@ -590,21 +647,30 @@ function gapGame() {
 
 /* ===== map ===== */
 function mapGame() {
-  const st = $('#stage'); st.innerHTML = '<div class="task">Верх карты это север 北. Нажми на здание, потом на место на карте.</div>';
+  const st = $('#stage'); st.innerHTML = '<div class="task">Верх карты это север 北. Перетащи здания на свои места.</div>';
   const g = el('div', 'mapg'); const layout = ['', 'n', '', 'w', 'c', 'e', '', 's', '']; const dn = { n: '北', s: '南', w: '西', e: '东' };
-  layout.forEach((k, i) => { const c = el('div', 'c'); if (k === 'c') c.appendChild(el('div', 'center', '北京大学')); else if (k) { const s = el('button', 'slot', `<span style="color:var(--jade-2)">${dn[k]}</span>`); s.type = 'button'; s.dataset.ans = MAP[k]; s.dataset.dir = dn[k]; c.appendChild(s); } else if (i === 0) c.textContent = '↑ 北'; g.appendChild(c); });
+  layout.forEach((k, i) => { const c = el('div', 'c'); if (k === 'c') c.appendChild(el('div', 'center', '北京大学')); else if (k) { const s = el('div', 'slot', `<span style="color:var(--jade-2)">${dn[k]}</span>`); s.dataset.ans = MAP[k]; s.dataset.dir = dn[k]; c.appendChild(s); } else if (i === 0) c.textContent = '↑ 北'; g.appendChild(c); });
   const bank = el('div', 'bank'); const clues = el('div', 'clues'); const f = el('div', 'fb'); const u = el('div', 'under');
   st.append(g, bank, clues, f, u);
-  let sel = null;
-  shuffle(Object.values(MAP)).forEach(t => { const b = el('button', 'chip', t); b.type = 'button'; b.style.fontSize = '22px'; b.onclick = () => { if (sel) sel.classList.remove('sel'); sel = b; b.classList.add('sel'); }; bank.appendChild(b); });
-  g.querySelectorAll('.slot').forEach(s => s.onclick = () => { if (!sel) { if (s.dataset.v) { [...bank.children].forEach(c => { if (c.textContent === s.dataset.v) c.classList.remove('used'); }); s.innerHTML = `<span style="color:var(--jade-2)">${s.dataset.dir}</span>`; delete s.dataset.v; s.classList.remove('ok', 'bad'); } return; }
-    if (s.dataset.v) [...bank.children].forEach(c => { if (c.textContent === s.dataset.v) c.classList.remove('used'); });
-    g.querySelectorAll('.slot').forEach(o => { if (o !== s && o.dataset.v === sel.textContent) { o.innerHTML = `<span style="color:var(--jade-2)">${o.dataset.dir}</span>`; delete o.dataset.v; } });
-    s.dataset.v = sel.textContent; s.textContent = sel.textContent; s.classList.remove('ok', 'bad'); sel.classList.remove('sel'); sel.classList.add('used'); sel = null; });
+  const slots = [...g.querySelectorAll('.slot')]; let sel = null;
+  const clear = s => { s.innerHTML = `<span style="color:var(--jade-2)">${s.dataset.dir}</span>`; delete s.dataset.v; s.classList.remove('ok', 'bad'); };
+  function render() {
+    bank.innerHTML = '';
+    Object.values(MAP).forEach(t => { const where = slots.find(s => s.dataset.v === t); if (!where) bank.appendChild(chip(t)); });
+    slots.forEach(s => { if (s.dataset.v) { s.innerHTML = ''; s.appendChild(chip(s.dataset.v)); } });
+  }
+  function place(t, s) { slots.forEach(o => { if (o.dataset.v === t) clear(o); }); if (s) { s.dataset.v = t; s.classList.remove('ok', 'bad'); } sel = null; render(); }
+  function chip(t) {
+    const b = el('button', 'chip' + (sel === t ? ' sel' : ''), t); b.type = 'button'; b.style.fontSize = '22px';
+    dragify(b, { zones: () => [...slots, bank], onTap: () => { sel = sel === t ? null : t; render(); }, onDrop: z => { if (z && z.classList.contains('slot')) place(t, z); else if (z === bank) place(t, null); else render(); } });
+    return b;
+  }
+  slots.forEach(s => s.addEventListener('click', e => { if (sel && !e.target.closest('.chip')) place(sel, s); }));
+  render();
   CLUES.forEach(([h, p]) => { const c = el('div', 'clue'); const sp = el('button', 'round', SPK); sp.type = 'button'; sp.setAttribute('aria-label', 'Прослушать'); sp.onclick = () => speak(h); c.append(sp, el('div', '', `<span class="hz">${h}</span><span class="py">${p}</span>`)); clues.appendChild(c); });
   const chk = el('button', 'btn solid', 'Проверить'); chk.type = 'button'; u.appendChild(chk); let tries = 0;
-  chk.onclick = () => { const sl = [...g.querySelectorAll('.slot')]; if (sl.some(s => !s.dataset.v)) { f.className = 'fb bad'; f.textContent = 'Поставь все четыре здания.'; return; }
-    let ok = 0; sl.forEach(s => { const r = s.dataset.v === s.dataset.ans; s.classList.toggle('ok', r); s.classList.toggle('bad', !r); if (r) ok++; }); tries++;
+  chk.onclick = () => { if (slots.some(s => !s.dataset.v)) { f.className = 'fb bad'; f.textContent = 'Поставь все четыре здания.'; return; }
+    let ok = 0; slots.forEach(s => { const r = s.dataset.v === s.dataset.ans; s.classList.toggle('ok', r); s.classList.toggle('bad', !r); if (r) ok++; }); tries++;
     if (ok === 4) { addXp(tries === 1 ? 30 : 15); f.className = 'fb ok'; f.textContent = 'Карта собрана. Теперь опиши её вслух: 图书馆在北京大学的北边……'; setTimeout(() => finish('map', tries === 1 ? 4 : tries === 2 ? 3 : 2, 4, 'Опиши карту вслух учителю.'), 1600); }
     else { f.className = 'fb bad'; f.textContent = `Верно ${ok} из 4. Перечитай подсказки.`; } };
 }
