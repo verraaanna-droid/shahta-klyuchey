@@ -237,7 +237,7 @@ function menu(){stop();bg('fire');app.style.justifyContent='';
  <div class="ln">${ic('emer','s')} Опыт: ${xp} XP</div><div class="ln">${ic('creeper','s')} Рекорд босса: ${store.get('misha_boss_w',0)}</div><div class="ln">${ic('star','s')} Уровень: ${1+(xp/200|0)}</div>
  <div class="ln">${ic('heart','s')} Трудных: ${weak}</div>
  <button class="btn sm" id="chp" style="width:100%">👤 Сменить игрока</button>
- <a class="btn sm w" href="index.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;width:100%">⛏ Шахта ключей</a></div></div>`;
+ <a class="btn sm w" href="index.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;width:100%">⛏ Шахта ключей</a><a class="btn sm g" href="nedelya.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;width:100%">📜 Задания недели</a></div></div>`;
  $('#chp').onclick=nameScreen;app.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{const ns=scope^(1<<(+b.dataset.l-1));if(!ns)return;scope=ns;store.set('misha_scope',ns);applyScope();menu()});
  app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const m=b.dataset.m;({mem,boss,book,build,write,sbuild,cloze,trans,run,hwcard,hwtap,hwrun,hwans}[m]||(()=>quiz(m)))()});}
 

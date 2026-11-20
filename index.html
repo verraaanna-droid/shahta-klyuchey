@@ -175,7 +175,7 @@ function menu(){stop();bg('fire');
  <div class="parch player"><div class="head"></div><div class="nm">${esc(PL)}</div>
  <div class="ln">${ic('emer','s')} Опыт: ${xp} XP</div><div class="ln">${ic('creeper','s')} Рекорд босса: ${store.get('misha_boss2',0)}</div><div class="ln">${ic('star','s')} Уровень: ${1+(xp/200|0)}</div>
  <button class="btn sm" id="chp" style="width:100%">👤 Сменить игрока</button>
- <a class="btn sm w" href="kuhnya.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;width:100%">🍜 Кухня слов</a></div></div>`;
+ <a class="btn sm w" href="kuhnya.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;width:100%">🍜 Кухня слов</a><a class="btn sm g" href="nedelya.html" style="text-decoration:none;display:flex;align-items:center;justify-content:center;text-align:center;width:100%">📜 Задания недели</a></div></div>`;
  $('#chp').onclick=nameScreen;
  app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const m=b.dataset.m;m==='mem'?mem():m==='boss'?boss():m==='book'?book():quiz(m)});}
 
