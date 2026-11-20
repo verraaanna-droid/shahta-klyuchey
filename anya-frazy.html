@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ededed">
+<title>Разговорник · 微信</title>
+<style>
+:root{--bg:#ededed;--card:#fff;--ink:#191919;--sub:#7a7a7a;--line:#e5e5e5;--green:#07c160;--green-d:#06ad56;--bubble:#95ec69;--py:#576b95;--star:#fa9d3b;--red:#fa5151}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI","Microsoft YaHei","Noto Sans SC",sans-serif}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.zh{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC","Hiragino Sans GB",sans-serif}
+#top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid #d9d9d9}
+.bar{height:52px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:17px;position:relative;max-width:760px;margin:0 auto}
+.bar .back{position:absolute;left:8px;font-size:26px;padding:4px 10px;line-height:1}
+.bar .tg{position:absolute;right:8px;display:flex;gap:4px}
+.tog{font-size:12px;padding:5px 9px;border-radius:14px;background:#fff;border:1px solid var(--line);color:var(--sub)}
+.tog.on{background:var(--green);border-color:var(--green);color:#fff}
+main{max-width:760px;margin:0 auto;padding:10px 12px 96px}
+.search{display:flex;align-items:center;gap:8px;background:#fff;border-radius:8px;padding:8px 12px;margin:2px 0 10px}
+.search input{border:0;outline:0;font:inherit;flex:1;background:none}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:7px 13px;border-radius:18px;background:#fff;font-size:14px;white-space:nowrap;border:1px solid transparent}
+.chip.on{background:var(--green);color:#fff}
+.sec{font-size:13px;color:var(--sub);margin:14px 4px 6px;display:flex;gap:6px;align-items:baseline}
+.sec .zh{font-size:13px}
+.card{background:var(--card);border-radius:10px;padding:12px 12px 10px 14px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:2px 10px}
+.card .h{font-size:22px;font-weight:600;line-height:1.3}
+.card .p{color:var(--py);font-size:15px}
+.card .r{font-size:15px}
+.card .n{font-size:13px;color:var(--sub);margin-top:2px}
+.card .ans{display:inline-flex;align-items:center;gap:6px;background:#f2f2f2;border-radius:6px;padding:4px 9px;font-size:14px;width:max-content;max-width:100%}
+.card .ans b{font-weight:500;color:var(--sub)}
+.card{grid-template-columns:1fr auto}
+.card>.h,.card>.p,.card>.r,.card>.n{grid-column:1}
+.card>.play{grid-column:2;grid-row:1/span 2;align-self:start}
+.acts{grid-column:1/-1;display:flex;gap:6px;align-items:center;justify-content:flex-end;margin-top:4px}
+.acts .sp{flex:1}
+.ib{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:15px;background:#f2f2f2;flex:none}
+.ib.play{width:44px;height:44px;font-size:18px}
+.ib.play{background:var(--green);color:#fff}
+.ib.fav.on{color:var(--star)}
+.ib.mic.rec{background:var(--red);color:#fff;animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.res{grid-column:1/-1;font-size:14px;margin-top:6px;padding:6px 10px;border-radius:6px}
+.res.ok{background:#e6f7ee;color:#067a3f}.res.bad{background:#fff1f0;color:#c0392b}
+.hide-py .p,.hide-ru .r,.hide-ru .tr{visibility:hidden}
+.hide-ru .card .r{visibility:hidden}
+.card.reveal .r,.card.reveal .p{visibility:visible!important}
+/* tab bar */
+#tabs{position:fixed;left:0;right:0;bottom:0;background:#f7f7f7;border-top:1px solid #d9d9d9;display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:6}
+#tabs .in{display:flex;width:100%;max-width:760px}
+#tabs button{flex:1;padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:11px;color:#191919}
+#tabs button .i{font-size:22px;line-height:1.1;filter:grayscale(1);opacity:.75}
+#tabs button.on{color:var(--green)}#tabs button.on .i{filter:none;opacity:1}
+/* dialogs */
+.dl{background:#fff;border-radius:10px;display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:8px;width:100%;text-align:left}
+.av{width:44px;height:44px;border-radius:6px;display:grid;place-items:center;font-size:22px;background:#f2f2f2;flex:none}
+.dl .t{font-weight:600}.dl .s{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw}
+.chat{display:flex;flex-direction:column;gap:14px;padding:6px 0 10px}
+.msg{display:flex;gap:9px;align-items:flex-start;max-width:100%}
+.msg.me{flex-direction:row-reverse}
+.msg .av{width:40px;height:40px;font-size:15px;font-weight:600;color:#fff}
+.bub{position:relative;background:#fff;border-radius:6px;padding:9px 12px;max-width:min(78%,520px);cursor:pointer}
+.msg.me .bub{background:var(--bubble)}
+.bub:before{content:"";position:absolute;top:13px;left:-6px;border:6px solid transparent;border-left:0;border-right-color:#fff}
+.msg.me .bub:before{left:auto;right:-6px;border-right:0;border-left:6px solid var(--bubble)}
+.bub .h{font-size:19px}.bub .p{font-size:13px;color:var(--py)}.bub .tr{font-size:13px;color:#4a4a4a;margin-top:2px}
+.msg.me .bub .p{color:#3b5b1f}
+.bub.playing{box-shadow:0 0 0 2px var(--green)}
+.who{font-size:12px;color:var(--sub);margin-bottom:2px}.msg.me .who{text-align:right}
+#ttl{max-width:calc(100% - 210px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctr{display:flex;gap:8px;justify-content:center;position:sticky;bottom:70px;margin-top:8px}
+.btn{background:var(--green);color:#fff;border-radius:8px;padding:10px 18px;font-weight:600}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn:active{background:var(--green-d)}
+.time{align-self:center;font-size:12px;color:#fff;background:#cecece;border-radius:4px;padding:2px 7px}
+/* practice */
+.pm{background:#fff;border-radius:10px;padding:14px;margin-bottom:8px;display:flex;gap:12px;align-items:center;width:100%;text-align:left}
+.pm .t{font-weight:600}.pm .s{font-size:13px;color:var(--sub)}
+.qbox{background:#fff;border-radius:10px;padding:16px;margin-bottom:10px}
+.qtop{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);margin-bottom:10px}
+.prog{height:4px;background:#e5e5e5;border-radius:2px;margin-bottom:12px;overflow:hidden}.prog i{display:block;height:100%;background:var(--green)}
+.opts{display:grid;gap:8px}
+.opt{background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 14px;text-align:left;font-size:17px}
+.opt.ok{background:#e6f7ee;border-color:var(--green)}.opt.no{background:#fff1f0;border-color:var(--red)}
+.big{font-size:30px;font-weight:600;text-align:center;margin:8px 0 2px}
+.fb{margin-top:10px;font-size:14px;color:var(--sub)}
+.empty{text-align:center;color:var(--sub);padding:40px 20px}
+@media (min-width:700px){.card .h{font-size:24px}}
+</style></head>
+<body>
+<div id="top"><div class="bar"><button class="back" id="back" hidden>‹</button><span id="ttl">Разговорник</span>
+<div class="tg"><button class="tog on" id="tpy">pīn</button><button class="tog on" id="tru">рус</button></div></div></div>
+<main id="app"></main>
+<nav id="tabs"><div class="in">
+<button data-t="ph" class="on"><span class="i">💬</span>Фразы</button>
+<button data-t="dl"><span class="i">👥</span>Диалоги</button>
+<button data-t="pr"><span class="i">🎯</span>Тренировка</button>
+<button data-t="fv"><span class="i">⭐</span>Избранное</button></div></nav>
+<script>
+// Разговорник для Ани: [иероглифы, пиньинь, перевод, пометка, ответ(иероглифы, необязательно)]
+const CATS = [
+ {id:'hi', zh:'认识新朋友', ru:'Знакомство', emoji:'👋', items:[
+  ['你好！','Nǐ hǎo!','Привет! / Здравствуй!','',''],
+  ['嗨！','Hāi!','Хай!','очень неформально',''],
+  ['哈喽！','Hā lou!','Хеллоу!','разговорное, от английского hello',''],
+  ['你叫什么名字？','Nǐ jiào shénme míngzi?','Как тебя зовут?','','我叫安雅。'],
+  ['我叫安雅。','Wǒ jiào Ānyǎ.','Меня зовут Аня.','安雅 — красивый вариант твоего имени по-китайски',''],
+  ['很高兴认识你！','Hěn gāoxìng rènshi nǐ!','Очень рада познакомиться!','','我也是！'],
+  ['我也是！','Wǒ yě shì!','Я тоже!','',''],
+  ['你是哪里人？','Nǐ shì nǎli rén?','Ты откуда?','','我是俄罗斯人。'],
+  ['我是俄罗斯人。','Wǒ shì Éluósī rén.','Я из России.','',''],
+  ['我来自莫斯科。','Wǒ láizì Mòsīkē.','Я из Москвы.','подставь свой город',''],
+  ['你多大了？','Nǐ duō dà le?','Сколько тебе лет?','','我十六岁。'],
+  ['我十六岁。','Wǒ shíliù suì.','Мне 16 лет.','',''],
+  ['我是高中生。','Wǒ shì gāozhōngshēng.','Я старшеклассница.','',''],
+  ['你是学生吗？','Nǐ shì xuésheng ma?','Ты учишься?','',''],
+  ['我在学中文。','Wǒ zài xué Zhōngwén.','Я учу китайский.','',''],
+  ['我的中文不太好。','Wǒ de Zhōngwén bú tài hǎo.','Мой китайский пока не очень.','',''],
+  ['你会说英语吗？','Nǐ huì shuō Yīngyǔ ma?','Ты говоришь по-английски?','','']]},
+ {id:'wx', zh:'加微信', ru:'Обмен WeChat', emoji:'💚', items:[
+  ['你有微信吗？','Nǐ yǒu Wēixìn ma?','У тебя есть WeChat?','微信 — так по-китайски называется WeChat','有啊！'],
+  ['加个微信吧！','Jiā ge Wēixìn ba!','Давай добавимся в WeChat!','самая частая фраза','好呀！'],
+  ['我扫你还是你扫我？','Wǒ sǎo nǐ háishi nǐ sǎo wǒ? ','Я сканирую твой код или ты мой?','в Китае добавляются по QR-коду','我扫你吧。'],
+  ['我扫你吧。','Wǒ sǎo nǐ ba.','Давай я отсканирую тебя.','',''],
+  ['你的二维码呢？','Nǐ de èrwéimǎ ne?','А где твой QR-код?','二维码 — QR-код',''],
+  ['我加你了，通过一下。','Wǒ jiā nǐ le, tōngguò yíxià.','Я тебя добавила, прими заявку.','',''],
+  ['你的微信号是多少？','Nǐ de Wēixìn hào shì duōshao?','Какой у тебя ID в WeChat?','',''],
+  ['我给你发消息。','Wǒ gěi nǐ fā xiāoxi.','Я тебе напишу.','',''],
+  ['有空微信聊！','Yǒu kòng Wēixìn liáo!','Будет время — спишемся в WeChat!','',''],
+  ['可以发语音吗？','Kěyǐ fā yǔyīn ma?','Можно отправить голосовое?','голосовые в Китае — норма','可以啊！']]},
+ {id:'kua', zh:'夸奖', ru:'Комплименты', emoji:'✨', items:[
+  ['你好漂亮！','Nǐ hǎo piàoliang!','Ты такая красивая!','好 здесь значит «такой, очень»','哪有～'],
+  ['你好可爱！','Nǐ hǎo kě\'ài!','Ты такая милая!','','谢谢夸奖！'],
+  ['你好帅！','Nǐ hǎo shuài!','Ты такой красивый!','帅 — о парне','哈哈，谢谢！'],
+  ['你的衣服好好看！','Nǐ de yīfu hǎo hǎokàn!','У тебя такая красивая одежда!','',''],
+  ['你好厉害！','Nǐ hǎo lìhai!','Ты такой(ая) крутой(ая)!','',''],
+  ['你的中文说得真好！','Nǐ de Zhōngwén shuō de zhēn hǎo!','Ты так хорошо говоришь по-китайски!','это скажут тебе 😊','哪里哪里。'],
+  ['哪里哪里。','Nǎli nǎli.','Да что ты, что ты!','классика: скромно и немного старомодно — китайцам будет очень приятно',''],
+  ['哪有～','Nǎ yǒu~','Да ладно, скажешь тоже~','так чаще говорят ровесники',''],
+  ['没有啦！','Méiyǒu la!','Да нет же!','мило и по-молодёжному',''],
+  ['谢谢夸奖！','Xièxie kuājiǎng!','Спасибо за комплимент!','',''],
+  ['你也是！','Nǐ yě shì!','Ты тоже!','',''],
+  ['还差得远呢。','Hái chà de yuǎn ne.','Мне ещё далеко до этого.','скромный ответ на похвалу твоего китайского','']]},
+ {id:'chat', zh:'聊天', ru:'Болтовня', emoji:'💬', items:[
+  ['你在干嘛？','Nǐ zài gàn ma?','Что делаешь?','','在听音乐。'],
+  ['在听音乐。','Zài tīng yīnyuè.','Слушаю музыку.','',''],
+  ['今天过得怎么样？','Jīntiān guò de zěnmeyàng?','Как прошёл день?','','还不错！你呢？'],
+  ['还不错！','Hái búcuò!','Неплохо!','',''],
+  ['有点累。','Yǒudiǎn lèi.','Немного устала.','',''],
+  ['你呢？','Nǐ ne?','А ты?','',''],
+  ['你喜欢做什么？','Nǐ xǐhuan zuò shénme?','Что ты любишь делать?','',''],
+  ['我喜欢听音乐和看电影。','Wǒ xǐhuan tīng yīnyuè hé kàn diànyǐng.','Я люблю слушать музыку и смотреть фильмы.','',''],
+  ['你喜欢哪个歌手？','Nǐ xǐhuan nǎge gēshǒu?','Какой певец тебе нравится?','',''],
+  ['你看过这个电视剧吗？','Nǐ kàn guo zhège diànshìjù ma?','Ты смотрел(а) этот сериал?','电视剧 — сериал (дорамы тоже)',''],
+  ['我很喜欢中国菜。','Wǒ hěn xǐhuan Zhōngguó cài.','Я очень люблю китайскую еду.','',''],
+  ['你去过俄罗斯吗？','Nǐ qù guo Éluósī ma?','Ты был(а) в России?','',''],
+  ['我想去中国。','Wǒ xiǎng qù Zhōngguó.','Я хочу поехать в Китай.','',''],
+  ['我们可以互相学习！','Wǒmen kěyǐ hùxiāng xuéxí!','Мы можем учить языки друг у друга!','отличная фраза для языкового обмена','好主意！']]},
+ {id:'net', zh:'微信用语', ru:'Язык WeChat', emoji:'📱', items:[
+  ['在吗？','Zài ma?','Ты тут?','частое начало переписки','在！'],
+  ['哈哈哈','hāhāhā','Ахаха','чем больше 哈, тем смешнее',''],
+  ['嗯嗯','ēn ēn','Угу, ага','два 嗯 звучат мягко и дружелюбно; одно 嗯 может показаться холодным',''],
+  ['好哒','hǎo da','Окей~','очень мило',''],
+  ['好的','hǎo de','Хорошо, ок','нейтрально',''],
+  ['666','liù liù liù','Круто! Ну ты даёшь!','666 звучит похоже на 溜 «ловко»',''],
+  ['笑死我了','xiào sǐ wǒ le','Я умираю со смеху','',''],
+  ['真的假的？','zhēn de jiǎ de?','Серьёзно? Правда?','',''],
+  ['稍等','shāo děng','Секунду, подожди','',''],
+  ['早！','zǎo!','Доброе утро!','коротко от 早上好',''],
+  ['晚安！','wǎn\'ān!','Спокойной ночи!','',''],
+  ['拜拜！','bàibài!','Пока-пока!','',''],
+  ['88','bā bā','Пока!','звучит как bye-bye',''],
+  ['么么哒','me me da','Чмоки!','только близким подругам 😘',''],
+  ['我先去忙了。','Wǒ xiān qù máng le.','Я пойду, у меня дела.','вежливо закончить переписку','好的，拜拜！'],
+  ['发个表情包','fā ge biǎoqíngbāo','Отправить стикер','表情包 — стикеры, их в Китае обожают','']]},
+ {id:'meet', zh:'约见面', ru:'Встретиться', emoji:'🧋', items:[
+  ['你周末有空吗？','Nǐ zhōumò yǒu kòng ma?','Ты свободен(на) на выходных?','','有空！怎么了？'],
+  ['我们一起去喝奶茶吧！','Wǒmen yìqǐ qù hē nǎichá ba!','Пойдём вместе выпьем бабл-ти!','奶茶 — молочный чай, любимый напиток молодёжи','好呀！'],
+  ['好呀！','Hǎo ya!','Давай! С удовольствием!','',''],
+  ['下次吧。','Xià cì ba.','Давай в другой раз.','',''],
+  ['几点见？','Jǐ diǎn jiàn?','Во сколько встретимся?','',''],
+  ['在哪儿见？','Zài nǎr jiàn?','Где встретимся?','',''],
+  ['不见不散！','Bú jiàn bú sàn!','Обязательно встретимся! Ждём друг друга!','',''],
+  ['我到了。','Wǒ dào le.','Я на месте.','',''],
+  ['不好意思，我迟到了。','Bù hǎoyìsi, wǒ chídào le.','Извини, я опоздала.','','没关系！'],
+  ['我们一起拍张照吧！','Wǒmen yìqǐ pāi zhāng zhào ba!','Давай сфоткаемся вместе!','','好啊！']]},
+ {id:'day', zh:'日常', ru:'Быт: кафе, магазин', emoji:'🛍️', items:[
+  ['我要这个。','Wǒ yào zhège.','Мне вот это.','',''],
+  ['多少钱？','Duōshao qián?','Сколько стоит?','',''],
+  ['太贵了！','Tài guì le!','Слишком дорого!','',''],
+  ['可以便宜一点吗？','Kěyǐ piányi yìdiǎn ma?','Можно подешевле?','на рынке торговаться — нормально',''],
+  ['一杯奶茶，少糖，少冰。','Yì bēi nǎichá, shǎo táng, shǎo bīng.','Один бабл-ти, поменьше сахара и льда.','',''],
+  ['可以微信支付吗？','Kěyǐ Wēixìn zhīfù ma?','Можно оплатить через WeChat?','в Китае почти всё оплачивают телефоном',''],
+  ['请问，洗手间在哪儿？','Qǐngwèn, xǐshǒujiān zài nǎr?','Скажите, где туалет?','请问……在哪儿 — из урока 4!',''],
+  ['可以帮我拍张照吗？','Kěyǐ bāng wǒ pāi zhāng zhào ma?','Можете меня сфотографировать?','',''],
+  ['有WiFi吗？','Yǒu WiFi ma?','Есть вайфай?','',''],
+  ['这个用中文怎么说？','Zhège yòng Zhōngwén zěnme shuō?','Как это по-китайски?','',''],
+  ['我只是看看。','Wǒ zhǐ shì kànkan.','Я просто смотрю.','в магазине, когда подходит продавец','']]},
+ {id:'help', zh:'听不懂', ru:'Если не понимаешь', emoji:'🤔', items:[
+  ['不好意思，我没听懂。','Bù hǎoyìsi, wǒ méi tīng dǒng.','Извини, я не поняла.','',''],
+  ['请你再说一遍。','Qǐng nǐ zài shuō yí biàn.','Повтори, пожалуйста, ещё раз.','',''],
+  ['请说慢一点。','Qǐng shuō màn yìdiǎn.','Говори помедленнее, пожалуйста.','',''],
+  ['这是什么意思？','Zhè shì shénme yìsi?','Что это значит?','',''],
+  ['可以写下来吗？','Kěyǐ xiě xiàlái ma?','Можешь написать?','',''],
+  ['我用一下翻译软件。','Wǒ yòng yíxià fānyì ruǎnjiàn.','Я воспользуюсь переводчиком.','','']]},
+ {id:'polite', zh:'礼貌和反应', ru:'Вежливость и реакции', emoji:'🙏', items:[
+  ['谢谢！','Xièxie!','Спасибо!','','不客气！'],
+  ['不客气！','Bú kèqi!','Не за что!','',''],
+  ['不好意思！','Bù hǎoyìsi!','Извини! / Простите!','мягче, чем 对不起 — на каждый день',''],
+  ['对不起！','Duìbuqǐ!','Прости!','когда правда виновата','没关系！'],
+  ['没关系！','Méi guānxi!','Ничего страшного!','из урока 4',''],
+  ['真的吗？','Zhēn de ma?','Правда?','',''],
+  ['太好了！','Tài hǎo le!','Отлично! Ура!','',''],
+  ['好可惜！','Hǎo kěxī!','Как жаль!','',''],
+  ['加油！','Jiāyóu!','Давай! Держись! Удачи!','',''],
+  ['没问题！','Méi wèntí!','Без проблем!','',''],
+  ['我也这么觉得。','Wǒ yě zhème juéde.','Я тоже так думаю.','',''],
+  ['随便。','Suíbiàn.','Без разницы, как хочешь.','',''],
+  ['好主意！','Hǎo zhǔyi!','Хорошая идея!','','']]},
+ {id:'bye', zh:'告别', ru:'Прощание', emoji:'👋', items:[
+  ['再见！','Zàijiàn!','До свидания!','',''],
+  ['下次见！','Xià cì jiàn!','До встречи!','',''],
+  ['明天见！','Míngtiān jiàn!','До завтра!','',''],
+  ['保持联系！','Bǎochí liánxì!','Будем на связи!','',''],
+  ['路上小心！','Lùshang xiǎoxīn!','Береги себя в дороге!','','']]}
+];
+
+// диалоги: роль, текст, пиньинь, перевод
+const ROLES = {'安雅':{ru:'Аня',me:1,c:'#95ec69'}, '小雨':{ru:'Сяо Юй',c:'#ffffff'}, '店员':{ru:'Продавец',c:'#ffffff'}};
+const DIALOGS = [
+ {t:'Знакомство в кафе', e:'☕', lines:[
+  ['小雨','你好！你是哪里人？','Nǐ hǎo! Nǐ shì nǎli rén?','Привет! Ты откуда?'],
+  ['安雅','你好！我是俄罗斯人。我叫安雅，你呢？','Nǐ hǎo! Wǒ shì Éluósī rén. Wǒ jiào Ānyǎ, nǐ ne?','Привет! Я из России. Меня зовут Аня, а тебя?'],
+  ['小雨','我叫小雨。你的中文说得真好！','Wǒ jiào Xiǎoyǔ. Nǐ de Zhōngwén shuō de zhēn hǎo!','Меня зовут Сяо Юй. Ты так хорошо говоришь по-китайски!'],
+  ['安雅','哪有～我还在学呢。','Nǎ yǒu~ Wǒ hái zài xué ne.','Да ладно~ Я ещё учу.'],
+  ['小雨','你好可爱！我们加个微信吧？','Nǐ hǎo kě\'ài! Wǒmen jiā ge Wēixìn ba?','Ты такая милая! Добавимся в WeChat?'],
+  ['安雅','好呀！我扫你还是你扫我？','Hǎo ya! Wǒ sǎo nǐ háishi nǐ sǎo wǒ?','Давай! Я сканирую тебя или ты меня?'],
+  ['小雨','我扫你吧。','Wǒ sǎo nǐ ba.','Давай я тебя.'],
+  ['安雅','好的，我的二维码在这儿。','Hǎo de, wǒ de èrwéimǎ zài zhèr.','Хорошо, вот мой QR-код.']]},
+ {t:'Первые сообщения в WeChat', e:'📱', lines:[
+  ['安雅','在吗？我是安雅～','Zài ma? Wǒ shì Ānyǎ~','Ты тут? Это Аня~'],
+  ['小雨','在！哈哈哈，很高兴认识你！','Zài! Hāhāhā, hěn gāoxìng rènshi nǐ!','Тут! Ахаха, очень рада познакомиться!'],
+  ['安雅','我也是！你在干嘛？','Wǒ yě shì! Nǐ zài gàn ma?','Я тоже! Что делаешь?'],
+  ['小雨','在听音乐。你喜欢哪个歌手？','Zài tīng yīnyuè. Nǐ xǐhuan nǎge gēshǒu?','Слушаю музыку. Какой певец тебе нравится?'],
+  ['安雅','我喜欢周杰伦！你呢？','Wǒ xǐhuan Zhōu Jiélún! Nǐ ne?','Мне нравится Джей Чоу! А тебе?'],
+  ['小雨','真的假的？我也超喜欢他！','Zhēn de jiǎ de? Wǒ yě chāo xǐhuan tā!','Серьёзно? Я тоже его обожаю!'],
+  ['安雅','太好了！我们可以互相学习，我教你俄语！','Tài hǎo le! Wǒmen kěyǐ hùxiāng xuéxí, wǒ jiāo nǐ Éyǔ!','Отлично! Можем учиться друг у друга — я научу тебя русскому!'],
+  ['小雨','好主意！晚安～明天聊！','Hǎo zhǔyi! Wǎn\'ān~ míngtiān liáo!','Хорошая идея! Спокойной ночи~ Завтра поболтаем!'],
+  ['安雅','晚安！','Wǎn\'ān!','Спокойной ночи!']]},
+ {t:'Договариваемся встретиться', e:'🧋', lines:[
+  ['小雨','你周末有空吗？','Nǐ zhōumò yǒu kòng ma?','Ты свободна на выходных?'],
+  ['安雅','有空！怎么了？','Yǒu kòng! Zěnme le?','Свободна! А что?'],
+  ['小雨','我们一起去喝奶茶吧！','Wǒmen yìqǐ qù hē nǎichá ba!','Пойдём вместе выпьем бабл-ти!'],
+  ['安雅','好呀！几点见？在哪儿见？','Hǎo ya! Jǐ diǎn jiàn? Zài nǎr jiàn?','Давай! Во сколько и где встретимся?'],
+  ['小雨','下午三点，在地铁站门口。','Xiàwǔ sān diǎn, zài dìtiě zhàn ménkǒu.','В три часа дня, у входа в метро.'],
+  ['安雅','好的，不见不散！','Hǎo de, bú jiàn bú sàn!','Хорошо, обязательно встретимся!']]},
+ {t:'В кафе с бабл-ти', e:'🛍️', lines:[
+  ['店员','你好，喝点什么？','Nǐ hǎo, hē diǎn shénme?','Здравствуйте, что будете пить?'],
+  ['安雅','一杯奶茶，少糖，少冰。','Yì bēi nǎichá, shǎo táng, shǎo bīng.','Один бабл-ти, поменьше сахара и льда.'],
+  ['店员','好的，十五块。','Hǎo de, shíwǔ kuài.','Хорошо, 15 юаней.'],
+  ['安雅','可以微信支付吗？','Kěyǐ Wēixìn zhīfù ma?','Можно оплатить через WeChat?'],
+  ['店员','可以，扫这个。','Kěyǐ, sǎo zhège.','Можно, сканируйте вот это.'],
+  ['安雅','谢谢！','Xièxie!','Спасибо!'],
+  ['店员','不客气！','Bú kèqi!','Не за что!']]}
+];
+
+const AUD={"你好！": "an_7583b2e09f.mp3", "嗨！": "an_028a29a158.mp3", "哈喽！": "an_38af02ef3b.mp3", "你叫什么名字？": "an_8f240b6da6.mp3", "我叫安雅。": "an_78da28c755.mp3", "很高兴认识你！": "an_6f7dd358fd.mp3", "我也是！": "an_67586e7e0b.mp3", "你是哪里人？": "an_276d2801db.mp3", "我是俄罗斯人。": "an_a52aff311c.mp3", "我来自莫斯科。": "an_8c809aae81.mp3", "你多大了？": "an_1269362064.mp3", "我十六岁。": "an_e218edd562.mp3", "我是高中生。": "an_f61ec5ce0e.mp3", "你是学生吗？": "an_76962037b8.mp3", "我在学中文。": "an_98eb532c85.mp3", "我的中文不太好。": "an_35b87ef375.mp3", "你会说英语吗？": "an_94274bdd45.mp3", "你有微信吗？": "an_bdfd0d7b7c.mp3", "有啊！": "an_e15e1d0dbb.mp3", "加个微信吧！": "an_5663901524.mp3", "好呀！": "an_044676a5c5.mp3", "我扫你还是你扫我？": "an_4ac731e9ba.mp3", "我扫你吧。": "an_e0babf8b38.mp3", "你的二维码呢？": "an_290cee626c.mp3", "我加你了，通过一下。": "an_e205c4c7af.mp3", "你的微信号是多少？": "an_4fbb26df37.mp3", "我给你发消息。": "an_b23cda7aed.mp3", "有空微信聊！": "an_5446e2e06e.mp3", "可以发语音吗？": "an_3f3c7c8847.mp3", "可以啊！": "an_5a7faf4c03.mp3", "你好漂亮！": "an_13db5ac603.mp3", "哪有～": "an_9d5810d26f.mp3", "你好可爱！": "an_d1c148ae12.mp3", "谢谢夸奖！": "an_3bdeacf0f1.mp3", "你好帅！": "an_f3d899a932.mp3", "哈哈，谢谢！": "an_5ccb9c8502.mp3", "你的衣服好好看！": "an_0ea665f306.mp3", "你好厉害！": "an_11a55d13a6.mp3", "你的中文说得真好！": "an_63ac7dab9b.mp3", "哪里哪里。": "an_cb4b5fa7af.mp3", "没有啦！": "an_5ad442e134.mp3", "你也是！": "an_2430076772.mp3", "还差得远呢。": "an_072763d517.mp3", "你在干嘛？": "an_e155f55c81.mp3", "在听音乐。": "an_91ddedd39d.mp3", "今天过得怎么样？": "an_d05f53de76.mp3", "还不错！你呢？": "an_fa36032db1.mp3", "还不错！": "an_20c45f5ae2.mp3", "有点累。": "an_a349d947fe.mp3", "你呢？": "an_4012bd3f86.mp3", "你喜欢做什么？": "an_c03a3c86eb.mp3", "我喜欢听音乐和看电影。": "an_38ff91202d.mp3", "你喜欢哪个歌手？": "an_a80f14eb2c.mp3", "你看过这个电视剧吗？": "an_85b3fc2436.mp3", "我很喜欢中国菜。": "an_66af8f6972.mp3", "你去过俄罗斯吗？": "an_1e0b0e7003.mp3", "我想去中国。": "an_deeb036a18.mp3", "我们可以互相学习！": "an_1349a11ede.mp3", "好主意！": "an_c1fbeb051e.mp3", "在吗？": "an_6518098f89.mp3", "在！": "an_3bbc06ab8c.mp3", "哈哈哈": "an_dd439e7956.mp3", "嗯嗯": "an_d12b5b6450.mp3", "好哒": "an_712815a5cc.mp3", "好的": "an_5b80996a9b.mp3", "666": "an_e2c52b684f.mp3", "笑死我了": "an_c8f20c3e96.mp3", "真的假的？": "an_fbe344dca5.mp3", "稍等": "an_4b39fd6607.mp3", "早！": "an_842c91d4f4.mp3", "晚安！": "an_22268e9f85.mp3", "拜拜！": "an_5f5b34accc.mp3", "88": "an_8159eebc4e.mp3", "么么哒": "an_aa93ae143e.mp3", "我先去忙了。": "an_daa8479272.mp3", "好的，拜拜！": "an_c4e2b5f6ba.mp3", "发个表情包": "an_2fbc8c38e7.mp3", "你周末有空吗？": "an_c7dc0327fa.mp3", "有空！怎么了？": "an_de0868de09.mp3", "我们一起去喝奶茶吧！": "an_4c1de5e7a9.mp3", "下次吧。": "an_3892bedd51.mp3", "几点见？": "an_a584db534a.mp3", "在哪儿见？": "an_9dea2fc36d.mp3", "不见不散！": "an_ede457841c.mp3", "我到了。": "an_31602b1e29.mp3", "不好意思，我迟到了。": "an_b003a9d2f3.mp3", "没关系！": "an_d4b8260599.mp3", "我们一起拍张照吧！": "an_ebaa947387.mp3", "好啊！": "an_7fbccbbda4.mp3", "我要这个。": "an_0c20a62dd1.mp3", "多少钱？": "an_54da5ef91d.mp3", "太贵了！": "an_3c51d4d2ca.mp3", "可以便宜一点吗？": "an_2974c5a2f7.mp3", "一杯奶茶，少糖，少冰。": "an_e36c4b9e09.mp3", "可以微信支付吗？": "an_4808fbf3c7.mp3", "请问，洗手间在哪儿？": "an_85a47d91ce.mp3", "可以帮我拍张照吗？": "an_a56f72a2f0.mp3", "有WiFi吗？": "an_544a033eee.mp3", "这个用中文怎么说？": "an_69c72485cf.mp3", "我只是看看。": "an_a1d6bddd63.mp3", "不好意思，我没听懂。": "an_cc99c132ff.mp3", "请你再说一遍。": "an_4e51d9eff6.mp3", "请说慢一点。": "an_935238109a.mp3", "这是什么意思？": "an_956176f35b.mp3", "可以写下来吗？": "an_b9da909451.mp3", "我用一下翻译软件。": "an_26e6b98e42.mp3", "谢谢！": "an_9137fdedcf.mp3", "不客气！": "an_e48b443a81.mp3", "不好意思！": "an_8be634d538.mp3", "对不起！": "an_6530312662.mp3", "真的吗？": "an_4429a433fe.mp3", "太好了！": "an_06dff159ea.mp3", "好可惜！": "an_823d539f9f.mp3", "加油！": "an_66d1cb5844.mp3", "没问题！": "an_4d6b58acae.mp3", "我也这么觉得。": "an_536883ef32.mp3", "随便。": "an_9aef4a8610.mp3", "再见！": "an_3d3084e64b.mp3", "下次见！": "an_4d05b08626.mp3", "明天见！": "an_3886d4bb48.mp3", "保持联系！": "an_d91bb3a8f7.mp3", "路上小心！": "an_b1560e6bef.mp3", "小雨|你好！你是哪里人？": "an_fbdbde1863.mp3", "安雅|你好！我是俄罗斯人。我叫安雅，你呢？": "an_a1759548a6.mp3", "小雨|我叫小雨。你的中文说得真好！": "an_9fedd3ddae.mp3", "安雅|哪有～我还在学呢。": "an_c5a271545d.mp3", "小雨|你好可爱！我们加个微信吧？": "an_1a592409cb.mp3", "安雅|好呀！我扫你还是你扫我？": "an_a309892ded.mp3", "小雨|我扫你吧。": "an_bda7b47986.mp3", "安雅|好的，我的二维码在这儿。": "an_fbced1051f.mp3", "安雅|在吗？我是安雅～": "an_f327e5b3e7.mp3", "小雨|在！哈哈哈，很高兴认识你！": "an_dfd936a18b.mp3", "安雅|我也是！你在干嘛？": "an_036b726235.mp3", "小雨|在听音乐。你喜欢哪个歌手？": "an_b600af3bd3.mp3", "安雅|我喜欢周杰伦！你呢？": "an_386fc10142.mp3", "小雨|真的假的？我也超喜欢他！": "an_814242e806.mp3", "安雅|太好了！我们可以互相学习，我教你俄语！": "an_4edeebe7b8.mp3", "小雨|好主意！晚安～明天聊！": "an_fb57f80104.mp3", "安雅|晚安！": "an_22268e9f85.mp3", "小雨|你周末有空吗？": "an_cefdd4d8b0.mp3", "安雅|有空！怎么了？": "an_de0868de09.mp3", "小雨|我们一起去喝奶茶吧！": "an_fb0e2fe92c.mp3", "安雅|好呀！几点见？在哪儿见？": "an_2d30e8b5eb.mp3", "小雨|下午三点，在地铁站门口。": "an_71065770d9.mp3", "安雅|好的，不见不散！": "an_8cb2bc2dfd.mp3", "店员|你好，喝点什么？": "an_1dca2ae2b0.mp3", "安雅|一杯奶茶，少糖，少冰。": "an_e36c4b9e09.mp3", "店员|好的，十五块。": "an_9744bbc7b8.mp3", "安雅|可以微信支付吗？": "an_4808fbf3c7.mp3", "店员|可以，扫这个。": "an_98630f7064.mp3", "安雅|谢谢！": "an_9137fdedcf.mp3", "店员|不客气！": "an_044f0aa5c8.mp3"};
+CATS.forEach(c=>c.items.forEach(i=>{i[1]=i[1].trim()}));
+const ALL=CATS.flatMap(c=>c.items.map(i=>({zh:i[0],py:i[1],ru:i[2],n:i[3],a:i[4],cat:c})));
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get:(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let fav=new Set(LS.get('anya_fav',[])),showPy=LS.get('anya_py',true),showRu=LS.get('anya_ru',true),cat=LS.get('anya_cat','all'),q='';
+const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+// ---- звук ----
+let cur=null;
+function play(key,txt,rate=1,onend){try{speechSynthesis.cancel()}catch(e){}if(cur){cur.pause();cur=null}
+ const f=AUD[key]||AUD[txt];if(f){const a=new Audio('audio/'+f);a.playbackRate=rate;a.preservesPitch=true;cur=a;a.onended=()=>{cur=null;onend&&onend()};a.play().catch(()=>tts(txt,rate,onend));return}tts(txt,rate,onend)}
+function tts(t,rate,onend){try{const u=new SpeechSynthesisUtterance(t);u.lang='zh-CN';u.rate=.85*rate;u.onend=onend;speechSynthesis.speak(u)}catch(e){onend&&onend()}}
+// ---- проверка произношения ----
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const han=s=>[...s].filter(c=>/[一-鿿]/.test(c)).join('');
+function lcs(a,b){const d=Array(b.length+1).fill(0);for(const x of a){let p=0;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=x===b[j-1]?p+1:Math.max(d[j],d[j-1]);p=t}}return d[b.length]}
+function listen(target,btn,out){if(!SR){out.className='res bad';out.textContent='Проверка голоса работает в Chrome / Edge / Safari.';return}
+ const r=new SR();r.lang='zh-CN';r.interimResults=false;r.maxAlternatives=3;btn.classList.add('rec');out.className='res';out.textContent='Говори…';
+ r.onresult=e=>{const alts=[...e.results[0]].map(x=>x.transcript);const t=han(target);let best=0,bt=alts[0];alts.forEach(a=>{const s=lcs(han(a),t)/Math.max(t.length,1);if(s>best){best=s;bt=a}});
+  out.className='res '+(best>=.7?'ok':'bad');out.innerHTML=(best>=.7?'✅ Отлично! ':'🔁 Почти! Попробуй ещё. ')+'Услышано: <span class="zh">'+esc(bt)+'</span>'};
+ r.onerror=()=>{out.className='res bad';out.textContent='Не получилось услышать. Разреши микрофон и попробуй ещё.'};
+ r.onend=()=>btn.classList.remove('rec');r.start()}
+// ---- переключатели ----
+function applyTog(){document.body.classList.toggle('hide-py',!showPy);document.body.classList.toggle('hide-ru',!showRu);$('#tpy').classList.toggle('on',showPy);$('#tru').classList.toggle('on',showRu)}
+$('#tpy').onclick=()=>{showPy=!showPy;LS.set('anya_py',showPy);applyTog()};$('#tru').onclick=()=>{showRu=!showRu;LS.set('anya_ru',showRu);applyTog()};applyTog();
+// ---- карточки ----
+function cardHTML(it,i){return `<div class="card" data-i="${i}"><div class="h zh">${esc(it.zh)}</div>
+ <button class="ib play" data-a="play" aria-label="Слушать">▶</button>
+ <div class="p">${esc(it.py)}</div><div class="r">${esc(it.ru)}</div>${it.n?`<div class="n">${esc(it.n)}</div>`:''}
+ <div class="acts">${it.a?`<button class="ans zh" data-a="ans"><b>Ответ:</b> ${esc(it.a)} 🔊</button>`:''}<span class="sp"></span><button class="ib" data-a="slow" aria-label="Медленно">🐢</button><button class="ib mic" data-a="mic" aria-label="Сказать">🎤</button><button class="ib fav ${fav.has(it.zh)?'on':''}" data-a="fav" aria-label="В избранное">${fav.has(it.zh)?'★':'☆'}</button></div>
+ <div class="res" hidden></div></div>`}
+function bindCards(list){app.querySelectorAll('.card').forEach(c=>{const it=list[+c.dataset.i];
+ c.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b){c.classList.toggle('reveal');return}const a=b.dataset.a;
+  if(a==='play')play(it.zh,it.zh);else if(a==='slow')play(it.zh,it.zh,.7);else if(a==='ans')play(it.a,it.a);
+  else if(a==='fav'){fav.has(it.zh)?fav.delete(it.zh):fav.add(it.zh);LS.set('anya_fav',[...fav]);b.classList.toggle('on');b.textContent=fav.has(it.zh)?'★':'☆'}
+  else if(a==='mic'){const o=c.querySelector('.res');o.hidden=false;listen(it.zh,b,o)}})})}
+function header(t,back){$('#ttl').textContent=t;$('#back').hidden=!back;$('#back').onclick=back||null;window.scrollTo(0,0)}
+// ---- вкладка Фразы ----
+function phrases(){header('Разговорник');
+ const list=ALL.filter(it=>(cat==='all'||it.cat.id===cat)&&(!q||(it.zh+it.py+it.ru).toLowerCase().includes(q)||it.py.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().includes(q)));
+ let html=`<label class="search">🔍<input id="q" placeholder="Поиск: «вичат», «nihao», 你好" value="${esc(q)}"></label>
+ <div class="chips"><button class="chip ${cat==='all'?'on':''}" data-c="all">Все · ${ALL.length}</button>${CATS.map(c=>`<button class="chip ${cat===c.id?'on':''}" data-c="${c.id}">${c.emoji} ${c.ru}</button>`).join('')}</div>`;
+ let last=null;list.forEach((it,i)=>{if(it.cat!==last){last=it.cat;html+=`<div class="sec">${it.cat.emoji} ${it.cat.ru} <span class="zh">${it.cat.zh}</span></div>`}html+=cardHTML(it,i)});
+ if(!list.length)html+='<div class="empty">Ничего не нашлось 🤷‍♀️</div>';
+ app.innerHTML=html;bindCards(list);
+ app.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{cat=b.dataset.c;LS.set('anya_cat',cat);phrases()});
+ const inp=$('#q');inp.oninput=()=>{q=inp.value.trim().toLowerCase();const pos=inp.selectionStart;phrases();const n=$('#q');n.focus();n.setSelectionRange(pos,pos)}}
+// ---- Избранное ----
+function favs(){header('Избранное');const list=ALL.filter(it=>fav.has(it.zh));
+ app.innerHTML=list.length?`<div class="sec">⭐ Твои фразы · ${list.length}</div>`+list.map(cardHTML).join(''):'<div class="empty">Нажми ☆ на любой фразе — и она появится здесь.<br><br>Удобно собрать свои самые нужные фразы.</div>';bindCards(list)}
+// ---- Диалоги ----
+const AVC={'安雅':'#07c160','小雨':'#fa9d3b','店员':'#576b95'};
+function dialogs(){header('Диалоги');app.innerHTML=DIALOGS.map((d,i)=>`<button class="dl" data-d="${i}"><span class="av">${d.e}</span><span><div class="t">${d.t}</div><div class="s zh">${esc(d.lines[d.lines.length-1][1])}</div></span></button>`).join('');
+ app.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>chat(+b.dataset.d))}
+function chat(k){const d=DIALOGS[k];header(d.t,dialogs);let stop=false;
+ app.innerHTML=`<div class="chat"><div class="time">Нажми на сообщение, чтобы послушать</div>${d.lines.map((l,i)=>`<div class="msg ${ROLES[l[0]].me?'me':''}"><div class="av" style="background:${AVC[l[0]]}">${ROLES[l[0]].ru[0]}</div><div><div class="who">${ROLES[l[0]].ru}</div><div class="bub" data-l="${i}"><div class="h zh">${esc(l[1])}</div><div class="p">${esc(l[2])}</div><div class="tr">${esc(l[3])}</div></div></div></div>`).join('')}</div>
+ <div class="ctr"><button class="btn" id="all">▶ Весь диалог</button><button class="btn ghost" id="me">🎭 Я — Аня</button></div>`;
+ const bubs=[...app.querySelectorAll('.bub')];const key=l=>l[0]+'|'+l[1];
+ const mark=i=>bubs.forEach((b,j)=>b.classList.toggle('playing',j===i));
+ bubs.forEach((b,i)=>b.onclick=()=>{stop=true;mark(i);play(key(d.lines[i]),d.lines[i][1],1,()=>mark(-1))});
+ $('#all').onclick=()=>{stop=false;let i=0;const go=()=>{if(stop||i>=d.lines.length){mark(-1);return}mark(i);bubs[i].scrollIntoView({block:'center',behavior:'smooth'});play(key(d.lines[i]),d.lines[i][1],1,()=>{i++;setTimeout(go,350)})};go()};
+ $('#me').onclick=()=>{stop=false;let i=0;const go=()=>{if(stop||i>=d.lines.length){mark(-1);return}mark(i);bubs[i].scrollIntoView({block:'center',behavior:'smooth'});
+   if(ROLES[d.lines[i][0]].me){bubs[i].classList.add('reveal');setTimeout(()=>{i++;go()},Math.max(2500,d.lines[i][1].length*450))}else play(key(d.lines[i]),d.lines[i][1],1,()=>{i++;setTimeout(go,300)})};go()}}
+// ---- Тренировка ----
+function practice(){header('Тренировка');
+ app.innerHTML=`<button class="pm" data-m="reply"><span class="av">💬</span><span><div class="t">Ответь в чате</div><div class="s">Тебе пишут — выбери, что ответить</div></span></button>
+ <button class="pm" data-m="mean"><span class="av">🀄</span><span><div class="t">Что это значит?</div><div class="s">Фраза → перевод</div></span></button>
+ <button class="pm" data-m="listen"><span class="av">🎧</span><span><div class="t">Послушай и найди</div><div class="s">Звучит фраза — выбери её</div></span></button>
+ <button class="pm" data-m="say"><span class="av">🎤</span><span><div class="t">Скажи по-китайски</div><div class="s">Видишь перевод — произнеси фразу, микрофон проверит</div></span></button>`;
+ app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>quiz(b.dataset.m))}
+function quiz(m){const N=10;let n=0,score=0;
+ const pairs=ALL.filter(it=>it.a),pool=m==='reply'?pairs:ALL;const qs=sh(pool).slice(0,N);
+ const title={reply:'Ответь в чате',mean:'Что это значит?',listen:'Послушай и найди',say:'Скажи по-китайски'}[m];
+ function next(){if(n>=qs.length)return end();const it=qs[n++];header(title,practice);
+  let body='',opts=[];
+  if(m==='reply'){opts=sh([it.a,...sh([...new Set(pairs.filter(x=>x.cat!==it.cat).map(x=>x.a))].filter(a=>a!==it.a)).slice(0,2)]);
+   body=`<div class="msg" style="margin:4px 0 14px"><div class="av" style="background:${AVC['小雨']};color:#fff;font-weight:600">С</div><div class="bub"><div class="h zh">${esc(it.zh)}</div><div class="p">${esc(it.py)}</div><div class="tr">${esc(it.ru)}</div></div></div><div class="fb">Что ответишь?</div>`}
+  else if(m==='mean'){opts=sh([it.ru,...sh(ALL.filter(x=>x.ru!==it.ru)).slice(0,3).map(x=>x.ru)]);body=`<div class="big zh">${esc(it.zh)}</div><div class="p" style="text-align:center;color:var(--py)">${esc(it.py)}</div>`}
+  else if(m==='listen'){opts=sh([it.zh,...sh(ALL.filter(x=>x.zh!==it.zh&&x.cat===it.cat)).slice(0,3).map(x=>x.zh)]);body=`<div style="text-align:center;margin:10px 0"><button class="btn" id="pl">🔊 Слушать ещё</button></div>`}
+  else body=`<div class="big" style="font-size:22px">${esc(it.ru)}</div>${it.n?`<div class="fb" style="text-align:center">${esc(it.n)}</div>`:''}
+   <div style="text-align:center;margin:14px 0 4px;display:flex;gap:8px;justify-content:center"><button class="btn" id="rec">🎤 Сказать</button><button class="btn ghost" id="show">Показать</button></div><div class="res" id="out" hidden></div>
+   <div id="ansb" hidden><div class="big zh" style="font-size:24px">${esc(it.zh)}</div><div class="p" style="text-align:center;color:var(--py)">${esc(it.py)}</div><div style="display:flex;gap:8px;justify-content:center;margin-top:10px"><button class="btn ghost" id="pl2">🔊</button><button class="btn" id="nx">Дальше ›</button></div></div>`;
+  app.innerHTML=`<div class="qbox"><div class="qtop"><span>${n} / ${qs.length}</span><span>Верно: ${score}</span></div><div class="prog"><i style="width:${(n-1)/qs.length*100}%"></i></div>${body}
+   ${opts.length?`<div class="opts">${opts.map((o,i)=>`<button class="opt ${m!=='mean'?'zh':''}" data-o="${i}">${esc(o)}</button>`).join('')}</div><div class="fb" id="fb"></div>`:''}</div>`;
+  if(m==='listen'){$('#pl').onclick=()=>play(it.zh,it.zh);setTimeout(()=>play(it.zh,it.zh),300)}
+  if(m==='reply')setTimeout(()=>play(it.zh,it.zh),300);
+  if(m==='say'){const o=$('#out');let done=false,t=null;
+   const reveal=()=>{if(t)clearInterval(t);$('#ansb').hidden=false;$('#show').hidden=true;play(it.zh,it.zh)};
+   $('#rec').onclick=()=>{o.hidden=false;listen(it.zh,$('#rec'),o);if(t)clearInterval(t);t=setInterval(()=>{if(!done&&o.classList.contains('ok')){done=true;score++;reveal()}},300)};
+   $('#show').onclick=reveal;$('#pl2').onclick=()=>play(it.zh,it.zh);$('#nx').onclick=()=>{if(t)clearInterval(t);next()}}
+  const right=m==='reply'?it.a:m==='mean'?it.ru:it.zh;
+  app.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{const o=opts[+b.dataset.o],ok=o===right;
+   app.querySelectorAll('[data-o]').forEach(x=>{x.disabled=true;if(opts[+x.dataset.o]===right)x.classList.add('ok')});if(!ok)b.classList.add('no');if(ok)score++;
+   const ansIt=m==='reply'?ALL.find(x=>x.zh===it.a):it;
+   $('#fb').innerHTML=(ok?'✅ Верно! ':'❌ Правильно: ')+`<span class="zh">${esc(ansIt?ansIt.zh:right)}</span> ${ansIt?'· '+esc(ansIt.py)+' · '+esc(ansIt.ru):''}<div style="margin-top:10px"><button class="btn" id="nx2">Дальше ›</button></div>`;
+   play(m==='reply'?it.a:it.zh,m==='reply'?it.a:it.zh);$('#nx2').onclick=next})}
+ function end(){header(title,practice);app.innerHTML=`<div class="qbox" style="text-align:center"><div style="font-size:54px">${score>=8?'🏆':score>=5?'👏':'💪'}</div><div class="big">${score} из ${qs.length}</div><div class="fb">${score>=8?'Супер! Можно смело знакомиться 😎':'Ещё разок — и будет отлично!'}</div><div style="display:flex;gap:8px;justify-content:center;margin-top:14px"><button class="btn" id="ag">Ещё раз</button><button class="btn ghost" id="bk">К тренировкам</button></div></div>`;$('#ag').onclick=()=>quiz(m);$('#bk').onclick=practice}
+ next()}
+// ---- табы ----
+const TABS={ph:phrases,dl:dialogs,pr:practice,fv:favs};
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{try{speechSynthesis.cancel()}catch(e){}if(cur){cur.pause();cur=null}document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));TABS[b.dataset.t]()});
+phrases();
+</script></body></html>
